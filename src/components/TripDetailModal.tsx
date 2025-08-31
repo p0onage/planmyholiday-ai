@@ -1,5 +1,4 @@
-import React from "react";
-import { TripDetailModalProps } from "../types";
+import { type TripDetailModalProps } from "../types";
 
 export default function TripDetailModal({ trip, onClose }: TripDetailModalProps) {
   if (!trip) return null;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaUserCircle, FaBars } from "react-icons/fa";
 
 export default function Header() {

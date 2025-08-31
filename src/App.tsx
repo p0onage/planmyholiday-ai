@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Header from './components/Header';
 import Tabs from './components/Tabs';
 import Hero from './components/Hero';
 import TripGrid from './components/TripGrid';
 import TripDetailModal from './components/TripDetailModal';
-import { Trip } from './types';
+import type { Trip } from './types';
+import baliImage from './assets/images/surf-in-bali.jpg';
 
 // Demo data for initial UI
 const demoTrips: Trip[] = [
@@ -12,7 +13,7 @@ const demoTrips: Trip[] = [
     id: 1,
     name: 'Bali Surf Adventure',
     location: 'Bali, Indonesia',
-    image: process.env.PUBLIC_URL + '/images/surf-in-bali.jpg',
+    image: baliImage,
     types: ['Watersports', 'Beach', 'Adventure'],
     rating: '9.3',
     activities: ['Surfing', 'Snorkeling', 'Yoga'],

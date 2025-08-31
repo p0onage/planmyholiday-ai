@@ -1,6 +1,5 @@
-import React from "react";
 import TripCard from "./TripCard";
-import { TripGridProps } from "../types";
+import { type TripGridProps } from "../types";
 
 export default function TripGrid({ trips, onView }: TripGridProps) {
   return (

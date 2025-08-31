@@ -1,5 +1,4 @@
-import React from "react";
-import { TabsProps } from "../types";
+import { type TabsProps } from "../types";
 
 const tabs: string[] = ["Journey", "Location", "Family", "Weekender"];
 

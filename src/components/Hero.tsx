@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HeroProps } from "../types";
+import { type HeroProps } from "../types";
 
 export default function Hero({ onPlan }: HeroProps) {
   const [prompt, setPrompt] = useState<string>("");
