@@ -1,11 +1,19 @@
-export default function TripDetailModal({ trip, onClose }) {
+import React from "react";
+import { TripDetailModalProps } from "../types";
+
+export default function TripDetailModal({ trip, onClose }: TripDetailModalProps) {
   if (!trip) return null;
+  
+  const handleClose = (): void => {
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-lg max-w-lg w-full p-6 relative">
         <button
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl"
-          onClick={onClose}
+          onClick={handleClose}
         >
           &times;
         </button>

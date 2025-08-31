@@ -1,4 +1,11 @@
-export default function TripCard({ trip, onView }) {
+import React from "react";
+import { TripCardProps } from "../types";
+
+export default function TripCard({ trip, onView }: TripCardProps) {
+  const handleViewClick = (): void => {
+    onView(trip);
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col">
       <img src={trip.image} alt={trip.name} className="h-40 w-full object-cover" />
@@ -19,7 +26,7 @@ export default function TripCard({ trip, onView }) {
         </div>
         <button
           className="mt-auto text-accent font-semibold hover:underline"
-          onClick={() => onView(trip)}
+          onClick={handleViewClick}
         >
           View Details
         </button>

@@ -4,9 +4,10 @@ import Tabs from './components/Tabs';
 import Hero from './components/Hero';
 import TripGrid from './components/TripGrid';
 import TripDetailModal from './components/TripDetailModal';
+import { Trip } from './types';
 
 // Demo data for initial UI
-const demoTrips = [
+const demoTrips: Trip[] = [
   {
     id: 1,
     name: 'Bali Surf Adventure',
@@ -26,12 +27,12 @@ const demoTrips = [
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('Journey');
-  const [trips, setTrips] = useState(demoTrips);
-  const [selectedTrip, setSelectedTrip] = useState(null);
+  const [activeTab, setActiveTab] = useState<string>('Journey');
+  const [trips, setTrips] = useState<Trip[]>(demoTrips);
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
 
   // Simulate AI agent interaction
-  const handlePlan = (prompt) => {
+  const handlePlan = (prompt: string): void => {
     // For now, just filter demoTrips by prompt keywords
     const filtered = demoTrips.filter(trip =>
       trip.name.toLowerCase().includes(prompt.toLowerCase()) ||
