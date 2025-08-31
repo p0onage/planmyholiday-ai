@@ -11,7 +11,7 @@ const demoTrips = [
     id: 1,
     name: 'Bali Surf Adventure',
     location: 'Bali, Indonesia',
-  image: '/images/surf-in-bali.jpg',
+    image: process.env.PUBLIC_URL + '/images/surf-in-bali.jpg',
     types: ['Watersports', 'Beach', 'Adventure'],
     rating: '9.3',
     activities: ['Surfing', 'Snorkeling', 'Yoga'],
