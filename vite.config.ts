@@ -12,7 +12,7 @@ export default defineConfig({
     open: true,
   },
   build: {
-    outDir: 'dist/planmyholiday-ai',
+    outDir: 'dist/',
     sourcemap: true,
   },
   base: '/planmyholiday-ai/',
