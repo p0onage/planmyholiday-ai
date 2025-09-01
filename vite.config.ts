@@ -15,5 +15,5 @@ export default defineConfig({
     outDir: 'dist/',
     sourcemap: true,
   },
-  base: '/planmyholiday-ai/',
+  base: './',
 })
