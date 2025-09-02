@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import Header from './components/Header';
-import Tabs from './components/Tabs';
+import Tabs from "./components/Tabs.tsx";
 import Hero from './components/Hero';
 import TripGrid from './components/TripGrid';
 import TripDetailModal from './components/TripDetailModal';
-import type { Trip } from './types';
+import type { Trip} from './types';
+import {TravelCategory} from "./types";
 import baliImage from './assets/images/surf-in-bali.jpg';
 
 // Demo data for initial UI
@@ -28,7 +29,7 @@ const demoTrips: Trip[] = [
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string>('Journey');
+  const [activeTab, setActiveTab] = useState<TravelCategory>(TravelCategory.Journey);
   const [trips, setTrips] = useState<Trip[]>(demoTrips);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
 
@@ -46,7 +47,7 @@ export default function App() {
     <div className="min-h-screen bg-white">
       <Header />
       <main className="max-w-6xl mx-auto px-2">
-        <Tabs active={activeTab} onChange={setActiveTab} />
+        <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
         <Hero onPlan={handlePlan} />
         <TripGrid trips={trips} onView={setSelectedTrip} />
         <TripDetailModal trip={selectedTrip} onClose={() => setSelectedTrip(null)} />

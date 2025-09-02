@@ -33,3 +33,17 @@ export interface TabsProps {
   active: string;
   onChange: (tab: string) => void;
 }
+
+export const TravelCategory = {
+  Journey: 'Journey',
+  Family: 'Family',
+  Weekender: 'Weekender',
+  City: 'City',
+} as const;
+
+export type TravelCategory = (typeof TravelCategory)[keyof typeof TravelCategory];
+
+export interface TravelTabProps {
+  activeTab?: TravelCategory;
+  onTabChange?: (tab: TravelCategory) => void;
+}
