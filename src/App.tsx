@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import Header from './components/Header';
 import Tabs from "./components/Tabs.tsx";
-import Hero from './components/Hero';
 import TripGrid from './components/TripGrid';
 import TripDetailModal from './components/TripDetailModal';
 import type { Trip} from './types';
 import {TravelCategory} from "./types";
 import baliImage from './assets/images/surf-in-bali.jpg';
+import SearchBar from "./components/SearchBar.tsx";
+import { CurrencyProvider } from './contexts/CurrencyContext';
 
 // Demo data for initial UI
 const demoTrips: Trip[] = [
@@ -43,15 +44,19 @@ export default function App() {
     setTrips(filtered.length ? filtered : demoTrips);
   };
 
-  return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      <main className="max-w-6xl mx-auto px-2">
-        <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
-        <Hero onPlan={handlePlan} />
-        <TripGrid trips={trips} onView={setSelectedTrip} />
-        <TripDetailModal trip={selectedTrip} onClose={() => setSelectedTrip(null)} />
-      </main>
-    </div>
+    return (
+    <CurrencyProvider>
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="max-w-6xl mx-auto px-2">
+          <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
+          {/* <Hero onPlan={handlePlan} /> */}
+          
+          <SearchBar />
+          <TripGrid trips={trips} onView={setSelectedTrip} />
+          <TripDetailModal trip={selectedTrip} onClose={() => setSelectedTrip(null)} />
+        </main>
+      </div>
+    </CurrencyProvider>
   );
 }

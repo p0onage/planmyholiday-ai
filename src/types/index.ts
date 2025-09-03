@@ -47,3 +47,26 @@ export interface TravelTabProps {
   activeTab?: TravelCategory;
   onTabChange?: (tab: TravelCategory) => void;
 }
+
+export type WhenOption = "flexible" | "month" | "exact";
+
+export interface ExactDates {
+  start: string;
+  end: string;
+}
+
+export type DurationUnit = "days" | "weeks" | "months" | "years";
+
+export interface TripPlannerFormValues {
+  query: string;
+  when: WhenOption;
+  flexibleText: string;
+  month: number;
+  year: number;
+  exactDates: ExactDates;
+  durationValue: number;
+  durationUnit: DurationUnit;
+  budget: number;
+  adults: number;
+  kids: number;
+}
