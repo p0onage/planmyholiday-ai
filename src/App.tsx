@@ -31,18 +31,18 @@ const demoTrips: Trip[] = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TravelCategory>(TravelCategory.Journey);
-  const [trips, setTrips] = useState<Trip[]>(demoTrips);
+  const [trips] = useState<Trip[]>(demoTrips);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
 
   // Simulate AI agent interaction
-  const handlePlan = (prompt: string): void => {
+  //const handlePlan = (prompt: string): void => {
     // For now, just filter demoTrips by prompt keywords
-    const filtered = demoTrips.filter(trip =>
-      trip.name.toLowerCase().includes(prompt.toLowerCase()) ||
-      trip.types.some(type => type.toLowerCase().includes(prompt.toLowerCase()))
-    );
-    setTrips(filtered.length ? filtered : demoTrips);
-  };
+  //  const filtered = demoTrips.filter(trip =>
+  //    trip.name.toLowerCase().includes(prompt.toLowerCase()) ||
+  //    trip.types.some(type => type.toLowerCase().includes(prompt.toLowerCase()))
+  //  );
+  //  setTrips(filtered.length ? filtered : demoTrips);
+  //};
 
     return (
     <CurrencyProvider>

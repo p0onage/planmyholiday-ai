@@ -1,4 +1,3 @@
-import React from "react";
 import { WhenToGo, DurationPicker, BudgetInput, GroupSizeInput, type FormInputLayout } from "./TripPlannerFormInputs";
 
 // Layout configuration for the entire form
