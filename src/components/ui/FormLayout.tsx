@@ -1,4 +1,4 @@
-import { WhenToGo, DurationPicker, BudgetInput, GroupSizeInput, type FormInputLayout } from "./TripPlannerFormInputs";
+import { WhenToGoInput, DurationInput, BudgetInput, GroupSizeInput, type FormInputLayout } from "./index";
 
 // Layout configuration for the entire form
 export interface FormLayoutConfig {
@@ -28,12 +28,12 @@ export default function FormLayout({ config = defaultConfig, className = "" }: F
     <div className={`space-y-6 ${className}`}>
       {/* Row 1: When to Go (Full Width) */}
       <div className="w-full">
-        <WhenToGo layout={layoutConfig.whenToGo} />
+        <WhenToGoInput layout={layoutConfig.whenToGo} />
       </div>
 
       {/* Row 2: Duration and Budget (Side by Side) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DurationPicker layout={layoutConfig.duration} />
+        <DurationInput layout={layoutConfig.duration} />
         <BudgetInput layout={layoutConfig.budget} />
       </div>
 

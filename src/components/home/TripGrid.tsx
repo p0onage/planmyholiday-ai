@@ -1,5 +1,5 @@
 import TripCard from "./TripCard";
-import { type TripGridProps } from "../types";
+import { type TripGridProps } from "../../types";
 
 export default function TripGrid({ trips, onView }: TripGridProps) {
   return (

@@ -1,4 +1,4 @@
-import { type TripCardProps } from "../types";
+import { type TripCardProps } from "../../types";
 
 export default function TripCard({ trip, onView }: TripCardProps) {
   const handleViewClick = (): void => {

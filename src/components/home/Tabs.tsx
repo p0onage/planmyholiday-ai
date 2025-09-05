@@ -1,5 +1,5 @@
 ﻿import {useState} from "react";
-import {TravelCategory, type TravelTabProps} from "../types";
+import {TravelCategory, type TravelTabProps} from "../../types";
 
 const Tabs = ({ activeTab = TravelCategory.Journey, onTabChange }: TravelTabProps) => {
     const [active, setActive] = useState<TravelCategory>(activeTab);

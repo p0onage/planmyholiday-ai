@@ -70,3 +70,6 @@ export interface TripPlannerFormValues {
   adults: number;
   kids: number;
 }
+
+// Re-export location types
+export * from './location';

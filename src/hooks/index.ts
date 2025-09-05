@@ -1,1 +1,1 @@
-export * from './CurrencyContext';
+export { useLocationService } from './useLocationService.ts';

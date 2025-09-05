@@ -1,7 +1,7 @@
 ﻿import { useState } from "react";
-import TripPlannerForm from "./ui/TripPlannerForm";
-import FormLayout, { singleColumnConfig } from "./ui/FormLayout";
-import { type TripPlannerFormValues } from "../types";
+import TripPlannerForm from "../ui/TripPlannerForm";
+import FormLayout, { singleColumnConfig } from "../ui/FormLayout";
+import { type TripPlannerFormValues } from "../../types";
 import { useFormContext } from "react-hook-form";
 
 // Modal controls component that can access form context
