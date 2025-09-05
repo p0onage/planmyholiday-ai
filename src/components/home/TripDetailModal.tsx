@@ -21,7 +21,7 @@ export default function TripDetailModal({ trip, onClose }: TripDetailModalProps)
         <div className="text-gray-500 mb-2">{trip.location}</div>
         <div className="flex gap-2 mb-4">
           {trip.types.map(type => (
-            <span key={type} className="bg-blue-100 text-accent px-2 py-1 rounded-full text-xs">
+            <span key={type} className="bg-primary-100 text-primary-600 px-2 py-1 rounded-full text-xs">
               {type}
             </span>
           ))}
@@ -41,10 +41,10 @@ export default function TripDetailModal({ trip, onClose }: TripDetailModalProps)
           </ul>
         </div>
         <div className="flex gap-4">
-          <button className="bg-accent text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-blue-700 transition">
+          <button className="bg-primary-500 text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-primary-600 transition">
             Book Now
           </button>
-          <button className="bg-gray-100 text-accent px-4 py-2 rounded-full font-semibold shadow hover:bg-gray-200 transition">
+          <button className="bg-gray-100 text-primary-500 px-4 py-2 rounded-full font-semibold shadow hover:bg-gray-200 transition">
             Save Trip
           </button>
         </div>

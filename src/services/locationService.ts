@@ -1,9 +1,10 @@
 // Location service for fetching user's location data based on IP using ipgeolocation.io
 
-import type {  LocationServiceResponse } from '../types/location';
+import type { LocationServiceResponse } from '../types/location';
+import { apiConfig } from '../config/api';
 
 class LocationService {
-  private readonly API_URL = 'https://api.ipgeolocation.io/ipgeo';
+  private readonly API_URL = `${apiConfig.ipgeolocation.baseUrl}?apiKey=${apiConfig.ipgeolocation.apiKey}`;
 
   /**
    * Fetch user's location data based on their IP address

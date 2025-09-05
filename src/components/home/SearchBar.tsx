@@ -106,7 +106,7 @@ export default function
                 {/* Search Button */}
                 <button 
                     type="submit" 
-                    className="px-6 py-4 bg-accent text-white hover:bg-accent/90 transition-colors"
+                    className="px-6 py-4 bg-primary-500 text-white hover:bg-primary-600 transition-colors"
                 >
                     <span className="text-lg">🔍</span>
                 </button>
@@ -168,7 +168,7 @@ export default function
                                 <button type="reset" className="underline text-gray-600">
                                     Clear all
                                 </button>
-                                <button type="submit" className="bg-accent p-3 rounded-full text-white hover:bg-accent/90 transition-colors">
+                                <button type="submit" className="bg-primary-500 p-3 rounded-full text-white hover:bg-primary-600 transition-colors">
                                     🔍
                                 </button>
                             </div>
