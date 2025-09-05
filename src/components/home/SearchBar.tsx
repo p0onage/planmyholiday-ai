@@ -7,7 +7,7 @@ import { useFormContext } from "react-hook-form";
 // Modal controls component that can access form context
 function ModalControls({ onClose }: { onClose: () => void }) {
     const { reset } = useFormContext<TripPlannerFormValues>();
-    
+
     const handleClearAll = () => {
         reset({
             query: "",
@@ -46,16 +46,10 @@ function ModalControls({ onClose }: { onClose: () => void }) {
     );
 }
 
-export default function SearchBar() {
+export default function 
+() {
     const [isDesktopModalOpen, setDesktopModalOpen] = useState(false);
     const [isMobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-
-    const singleColumnConfig: FormLayoutConfig = {
-        whenToGo: { fullWidth: true },
-        duration: { fullWidth: true },
-        budget: { fullWidth: true },
-        groupSize: { fullWidth: true },
-    };
 
     const defaultValues: TripPlannerFormValues = {
         query: "",
@@ -69,6 +63,13 @@ export default function SearchBar() {
         budget: 0,
         adults: 1,
         kids: 0,
+    };
+
+    const singleColumnConfig : FormLayoutConfig  = {
+        whenToGo: { fullWidth: true },
+        duration: { fullWidth: true },
+        budget: { fullWidth: true },
+        groupSize: { fullWidth: true },
     };
 
     const onSubmit = (data: TripPlannerFormValues) => {
