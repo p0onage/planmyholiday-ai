@@ -124,7 +124,7 @@ class JsonDataService {
     const destinationActivities = this.getDestinationActivities(request.destination);
     
     if (destinationActivities.length > 0) {
-      return destinationActivities.map((activity, index) => ({
+      return destinationActivities.map((activity) => ({
         id: activity.id,
         name: activity.name,
         description: activity.description,
@@ -298,14 +298,14 @@ class JsonDataService {
   }
 
   // Generate transportation options based on destination data
-  generateTransportation(request: TripPlanningRequest, tripData?: FeaturedTrip): Transportation[] {
+  generateTransportation(request: TripPlanningRequest): Transportation[] {
     // Get transportation from the comprehensive JSON data
     const destinationTransportation = this.getDestinationTransportation(request.destination);
     
     if (destinationTransportation.length > 0) {
       return destinationTransportation.map((transport) => ({
         id: transport.id,
-        type: transport.type,
+        type: transport.type as "flight" | "local_transport",
         name: transport.name,
         description: transport.description,
         duration: transport.duration,
@@ -432,7 +432,7 @@ class JsonDataService {
     
     const activities = this.generateActivities(request, matchingTrip);
     const accommodation = this.generateAccommodation(request, matchingTrip);
-    const transportation = this.generateTransportation(request, matchingTrip);
+    const transportation = this.generateTransportation(request);
     const itinerary = this.generateItinerary(request, matchingTrip);
 
     const totalCost = activities.reduce((sum, activity) => sum + activity.price, 0) +
@@ -497,7 +497,6 @@ class JsonDataService {
       'Hiking': 'adventure',
       'Bungee Jumping': 'adventure',
       'Milford Sound': 'nature',
-      'Wine Tasting': 'culture',
       'Burj Khalifa': 'leisure',
       'Desert Safari': 'adventure',
       'Luxury Dining': 'culture',
@@ -536,7 +535,6 @@ class JsonDataService {
       'Hiking': 40,
       'Bungee Jumping': 150,
       'Milford Sound': 85,
-      'Wine Tasting': 50,
       'Burj Khalifa': 50,
       'Desert Safari': 90,
       'Luxury Dining': 120,
@@ -577,7 +575,6 @@ class JsonDataService {
       'Hiking': '4 hours',
       'Bungee Jumping': '1 hour',
       'Milford Sound': '4 hours',
-      'Wine Tasting': '3 hours',
       'Burj Khalifa': '2 hours',
       'Desert Safari': '6 hours',
       'Luxury Dining': '2 hours',

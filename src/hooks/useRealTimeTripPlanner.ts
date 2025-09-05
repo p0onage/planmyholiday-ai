@@ -2,13 +2,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tripPlannerService } from '../services/tripPlannerService';
-import { jsonDataService } from '../services/jsonDataService';
 import type { 
-  TripPlanningRequest,
-  Activity,
-  Accommodation,
-  Transportation,
-  TripPlan
+  TripPlanningRequest
 } from '../services/tripPlannerService';
 
 interface UseRealTimeTripPlannerOptions {
@@ -421,6 +416,7 @@ export function useRealTimeTripPlanner(options: UseRealTimeTripPlannerOptions) {
   // Get AI suggestions
   const getAISuggestions = useCallback(async (section: 'activities' | 'accommodation' | 'transportation', input: string) => {
     if (!tripPlanQuery.data?.id) return null;
+    section.includes('activities');
 
     try {
       const result = await aiSuggestionsMutation.mutateAsync({

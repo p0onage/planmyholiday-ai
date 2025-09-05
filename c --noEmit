@@ -1,0 +1,29 @@
+warning: in the working copy of 'src/services/jsonDataService.ts', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/src/services/jsonDataService.ts b/src/services/jsonDataService.ts[m
+[1mindex e12b7a8..4b49351 100644[m
+[1m--- a/src/services/jsonDataService.ts[m
+[1m+++ b/src/services/jsonDataService.ts[m
+[36m@@ -497,7 +497,6 @@[m [mclass JsonDataService {[m
+       'Hiking': 'adventure',[m
+       'Bungee Jumping': 'adventure',[m
+       'Milford Sound': 'nature',[m
+[31m-      'Wine Tasting': 'culture',[m
+       'Burj Khalifa': 'leisure',[m
+       'Desert Safari': 'adventure',[m
+       'Luxury Dining': 'culture',[m
+[36m@@ -536,7 +535,6 @@[m [mclass JsonDataService {[m
+       'Hiking': 40,[m
+       'Bungee Jumping': 150,[m
+       'Milford Sound': 85,[m
+[31m-      'Wine Tasting': 50,[m
+       'Burj Khalifa': 50,[m
+       'Desert Safari': 90,[m
+       'Luxury Dining': 120,[m
+[36m@@ -577,7 +575,6 @@[m [mclass JsonDataService {[m
+       'Hiking': '4 hours',[m
+       'Bungee Jumping': '1 hour',[m
+       'Milford Sound': '4 hours',[m
+[31m-      'Wine Tasting': '3 hours',[m
+       'Burj Khalifa': '2 hours',[m
+       'Desert Safari': '6 hours',[m
+       'Luxury Dining': '2 hours',[m
