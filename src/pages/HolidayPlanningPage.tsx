@@ -1,32 +1,18 @@
 ﻿import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useGenerateTripPlan } from '../hooks/useTripPlanner';
+import { useRealTimeTripPlanner } from '../hooks/useRealTimeTripPlanner';
 import DestinationStep from '../components/planning/DestinationStep';
 import ActivitiesStep from '../components/planning/ActivitiesStep';
 import AccommodationStep from '../components/planning/AccommodationStep';
 import TransportationStep from '../components/planning/TransportationStep';
 import ItineraryPreview from '../components/planning/ItineraryPreview';
 import LoadingSpinner from '../components/planning/LoadingSpinner';
-import type { TripPlanningRequest, TripPlan } from '../types';
+import type { TripPlanningRequest } from '../types';
 
 export default function HolidayPlanningPage() {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
-  const [selectedAccommodation, setSelectedAccommodation] = useState<string[]>([]);
-  const [selectedTransportation, setSelectedTransportation] = useState<string[]>([]);
-  const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
-  const [currentRequest, setCurrentRequest] = useState<TripPlanningRequest | null>(null);
-  const [refreshingSteps, setRefreshingSteps] = useState<{
-    activities: boolean;
-    accommodation: boolean;
-    transportation: boolean;
-  }>({
-    activities: false,
-    accommodation: false,
-    transportation: false
-  });
 
   // Get form data from navigation state (passed from homepage search)
   const getInitialRequest = (): TripPlanningRequest => {
@@ -37,9 +23,12 @@ export default function HolidayPlanningPage() {
       return stateData.tripRequest;
     }
     
+    // Get first destination from JSON data
+    const firstDestination = 'Bali, Indonesia'; // Default to Bali as first destination
+    
     // Fallback to default values if no state data
     return {
-      destination: 'Bali',
+      destination: firstDestination,
       departureCity: 'Amsterdam',
       startDate: new Date().toISOString().split('T')[0],
       endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -48,7 +37,7 @@ export default function HolidayPlanningPage() {
       children: 0,
       budget: 2000,
       preferences: {
-        themes: ['tropical', 'adventure'],
+        themes: [],
         activityTypes: ['beach', 'culture'],
         accommodationTypes: ['resort', 'villa'],
         transportationPreferences: ['flight', 'local']
@@ -58,151 +47,82 @@ export default function HolidayPlanningPage() {
 
   const initialRequest = getInitialRequest();
   
-  // Initialize current request
-  useEffect(() => {
-    if (!currentRequest) {
-      setCurrentRequest(initialRequest);
-    }
-  }, [initialRequest, currentRequest]);
+  // Use the real-time trip planner hook
+  const {
+    currentRequest,
+    selectedActivities,
+    selectedAccommodation,
+    selectedTransportation,
+    tripPlan,
+    activities,
+    accommodation,
+    isLoading,
+    isActivitiesLoading,
+    isAccommodationLoading,
+    isTransportationLoading,
+    error,
+    updateRequest,
+    toggleActivity,
+    toggleAccommodation,
+    toggleTransportation,
+    updateCustomInput,
+    searchActivities,
+    searchAccommodation,
+    searchTransportation,
+    calculateTotalCost,
+    getFilteredData
+  } = useRealTimeTripPlanner({
+    initialRequest,
+    enableRealTimeUpdates: true,
+    debounceMs: 500
+  });
   
   // Handle request updates
   const handleRequestChange = (updates: Partial<TripPlanningRequest> | TripPlanningRequest) => {
-    // Check if it's a full request object or partial updates
-    if ('preferences' in updates && 'startDate' in updates && 'endDate' in updates) {
-      // Full request object from DestinationStep
-      setCurrentRequest(updates as TripPlanningRequest);
-      console.log('Destination filters applied, refreshing downstream options...');
-      // Show loading states for all downstream steps
-      setRefreshingSteps({
-        activities: true,
-        accommodation: true,
-        transportation: true
-      });
-      
-      // Simulate API refresh delay
-      setTimeout(() => {
-        setRefreshingSteps({
-          activities: false,
-          accommodation: false,
-          transportation: false
-        });
-      }, 2000);
-    } else {
-      // Partial updates from other steps
-      setCurrentRequest(prev => prev ? { ...prev, ...updates } : null);
-      // Trigger refresh of downstream steps when theme changes
-      if (updates.preferences?.themes) {
-        console.log('Theme changed, refreshing downstream options...');
-        // Show loading states for all downstream steps
-        setRefreshingSteps({
-          activities: true,
-          accommodation: true,
-          transportation: true
-        });
-        
-        // Simulate API refresh delay
-        setTimeout(() => {
-          setRefreshingSteps({
-            activities: false,
-            accommodation: false,
-            transportation: false
-          });
-        }, 2000);
-      }
-    }
+    updateRequest(updates);
   };
-
-  // Use the hook to generate trip plan
-  const { data: generatedTripPlan, isLoading, error } = useGenerateTripPlan(currentRequest || initialRequest);
-
-  // Update trip plan when data is received
-  useEffect(() => {
-    if (generatedTripPlan) {
-      setTripPlan(generatedTripPlan);
-    }
-  }, [generatedTripPlan]);
 
   // Navigation functions
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4));
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
   const goToStep = (step: number) => setCurrentStep(Math.max(1, Math.min(4, step)));
 
-  // Selection functions with context-aware refreshing
-  const toggleActivity = (activityId: string) => {
-    setSelectedActivities(prev => {
-      const newSelection = prev.includes(activityId) 
-        ? prev.filter(id => id !== activityId)
-        : [...prev, activityId];
-      
-      // Trigger refresh of downstream steps (accommodation & transportation)
-      console.log('Activity selection changed, refreshing accommodation and transportation options...');
-      setRefreshingSteps(prev => ({
-        ...prev,
-        accommodation: true,
-        transportation: true
-      }));
-      
-      // Simulate API refresh delay
-      setTimeout(() => {
-        setRefreshingSteps(prev => ({
-          ...prev,
-          accommodation: false,
-          transportation: false
-        }));
-      }, 1500);
-      
-      return newSelection;
-    });
+  // Custom input handlers with search functionality
+  const handleCustomInputChange = (section: 'activities' | 'accommodation' | 'transportation', input: string) => {
+    updateCustomInput(section, input);
+    console.log(`Custom input for ${section}:`, input);
+    
+    // Example of using search functions
+    if (input.trim()) {
+      switch (section) {
+        case 'activities':
+          const searchResults = searchActivities(input);
+          console.log('Search results for activities:', searchResults);
+          break;
+        case 'accommodation':
+          const accResults = searchAccommodation(input);
+          console.log('Search results for accommodation:', accResults);
+          break;
+        case 'transportation':
+          const transportResults = searchTransportation(input);
+          console.log('Search results for transportation:', transportResults);
+          break;
+      }
+    }
   };
 
-  const toggleAccommodation = (accommodationId: string) => {
-    setSelectedAccommodation(prev => {
-      const newSelection = prev.includes(accommodationId) 
-        ? prev.filter(id => id !== accommodationId)
-        : [...prev, accommodationId];
-      
-      // Trigger refresh of downstream steps (transportation)
-      console.log('Accommodation selection changed, refreshing transportation options...');
-      setRefreshingSteps(prev => ({
-        ...prev,
-        transportation: true
-      }));
-      
-      // Simulate API refresh delay
-      setTimeout(() => {
-        setRefreshingSteps(prev => ({
-          ...prev,
-          transportation: false
-        }));
-      }, 1000);
-      
-      return newSelection;
-    });
-  };
+  // Example filter functions (available for use in components)
+  // const handlePriceFilter = (section: 'activities' | 'accommodation' | 'transportation', minPrice: number, maxPrice: number) => {
+  //   const filteredResults = filterByPriceRange(section, minPrice, maxPrice);
+  //   console.log(`Filtered ${section} by price range ${minPrice}-${maxPrice}:`, filteredResults);
+  // };
 
-  const toggleTransportation = (transportationId: string) => {
-    setSelectedTransportation(prev => {
-      const newSelection = prev.includes(transportationId) 
-        ? prev.filter(id => id !== transportationId)
-        : [...prev, transportationId];
-      
-      // Final step - update trip plan with all selections
-      console.log('Transportation selection changed, finalizing trip plan...');
-      // In a real app, this would trigger final trip plan generation
-      // with all selected activities, accommodation, and transportation
-      
-      return newSelection;
-    });
-  };
+  // const handleRatingFilter = (section: 'activities' | 'accommodation', minRating: number) => {
+  //   const filteredResults = filterByRating(section, minRating);
+  //   console.log(`Filtered ${section} by rating ${minRating}+:`, filteredResults);
+  // };
 
-  const updateCustomInput = (section: 'activities' | 'accommodation' | 'transportation', value: string) => {
-    console.log(`Custom input for ${section}:`, value);
-  };
-
-  // Get data from trip plan or use fallback mock data
-  const activities = tripPlan?.activities || [];
-  const accommodation = tripPlan?.accommodation || [];
-  const transportation = tripPlan?.transportation || [];
+  // Get data from the hook
   const itinerary = tripPlan?.itinerary || [];
 
   // Check if mobile
@@ -214,12 +134,6 @@ export default function HolidayPlanningPage() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  const handleCustomInputChange = (section: 'activities' | 'accommodation' | 'transportation', input: string) => {
-    updateCustomInput(section, input);
-    // Here you would trigger AI suggestions based on the input
-    console.log(`Custom input for ${section}:`, input);
-  };
 
   const handleRegeneratePlan = () => {
     // Regenerate plan with current selections
@@ -234,22 +148,6 @@ export default function HolidayPlanningPage() {
   const handleBookNow = () => {
     // Navigate to booking page
     console.log('Book now');
-  };
-
-  const calculateTotalCost = () => {
-    const activityCost = activities
-      .filter(activity => selectedActivities.includes(activity.id))
-      .reduce((sum, activity) => sum + activity.price, 0);
-    
-    const accommodationCost = accommodation
-      .filter(acc => selectedAccommodation.includes(acc.id))
-      .reduce((sum, acc) => sum + (acc.pricePerNight * acc.totalNights), 0);
-    
-    const transportCost = transportation
-      .filter(transport => selectedTransportation.includes(transport.id))
-      .reduce((sum, transport) => sum + transport.price, 0);
-    
-    return activityCost + accommodationCost + transportCost;
   };
 
   // Show loading spinner while planning
@@ -281,6 +179,7 @@ export default function HolidayPlanningPage() {
       case 1:
         return (
           <DestinationStep
+            key={currentRequest?.destination || 'default'}
             request={currentRequest || initialRequest}
             onRequestChange={handleRequestChange}
           />
@@ -294,7 +193,7 @@ export default function HolidayPlanningPage() {
             onToggleActivity={toggleActivity}
             onCustomInputChange={(input) => handleCustomInputChange('activities', input)}
             onRefreshAI={() => console.log('Refresh AI for activities')}
-            isLoading={refreshingSteps.activities}
+            isLoading={isActivitiesLoading}
           />
         );
       case 3:
@@ -306,7 +205,7 @@ export default function HolidayPlanningPage() {
             onToggleAccommodation={toggleAccommodation}
             onCustomInputChange={(input) => handleCustomInputChange('accommodation', input)}
             onRefreshAI={() => console.log('Refresh AI for accommodation')}
-            isLoading={refreshingSteps.accommodation}
+            isLoading={isAccommodationLoading}
           />
         );
       case 4:
@@ -317,7 +216,7 @@ export default function HolidayPlanningPage() {
             onToggleTransportation={toggleTransportation}
             onCustomInputChange={(input) => handleCustomInputChange('transportation', input)}
             onRefreshAI={() => console.log('Refresh AI for transportation')}
-            isLoading={refreshingSteps.transportation}
+            isLoading={isTransportationLoading}
           />
         );
       default:
@@ -344,9 +243,9 @@ export default function HolidayPlanningPage() {
                 onRegeneratePlan={handleRegeneratePlan}
                 onCustomize={handleCustomize}
                 onBookNow={handleBookNow}
-                selectedActivities={activities.filter(activity => selectedActivities.includes(activity.id))}
-                selectedAccommodation={accommodation.filter(acc => selectedAccommodation.includes(acc.id))}
-                selectedTransportation={transportation.filter(transport => selectedTransportation.includes(transport.id))}
+                selectedActivities={getFilteredData().selectedActivities}
+                selectedAccommodation={getFilteredData().selectedAccommodation}
+                selectedTransportation={getFilteredData().selectedTransportation}
               />
             </div>
 
@@ -400,7 +299,7 @@ export default function HolidayPlanningPage() {
                   onToggleActivity={toggleActivity}
                   onCustomInputChange={(input) => handleCustomInputChange('activities', input)}
                   onRefreshAI={() => console.log('Refresh AI for activities')}
-                  isLoading={refreshingSteps.activities}
+                  isLoading={isActivitiesLoading}
                 />
                 <AccommodationStep
                   request={currentRequest || initialRequest}
@@ -409,7 +308,7 @@ export default function HolidayPlanningPage() {
                   onToggleAccommodation={toggleAccommodation}
                   onCustomInputChange={(input) => handleCustomInputChange('accommodation', input)}
                   onRefreshAI={() => console.log('Refresh AI for accommodation')}
-                  isLoading={refreshingSteps.accommodation}
+                  isLoading={isAccommodationLoading}
                 />
                 <TransportationStep
                   request={currentRequest || initialRequest}
@@ -417,7 +316,7 @@ export default function HolidayPlanningPage() {
                   onToggleTransportation={toggleTransportation}
                   onCustomInputChange={(input) => handleCustomInputChange('transportation', input)}
                   onRefreshAI={() => console.log('Refresh AI for transportation')}
-                  isLoading={refreshingSteps.transportation}
+                  isLoading={isTransportationLoading}
                 />
               </div>
             </div>
@@ -432,9 +331,9 @@ export default function HolidayPlanningPage() {
                   onRegeneratePlan={handleRegeneratePlan}
                   onCustomize={handleCustomize}
                   onBookNow={handleBookNow}
-                  selectedActivities={activities.filter(activity => selectedActivities.includes(activity.id))}
-                  selectedAccommodation={accommodation.filter(acc => selectedAccommodation.includes(acc.id))}
-                  selectedTransportation={transportation.filter(transport => selectedTransportation.includes(transport.id))}
+                  selectedActivities={getFilteredData().selectedActivities}
+                  selectedAccommodation={getFilteredData().selectedAccommodation}
+                  selectedTransportation={getFilteredData().selectedTransportation}
                 />
               </div>
             </div>

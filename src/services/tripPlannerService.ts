@@ -1,5 +1,6 @@
 // Trip Planner Service - AI-powered holiday planning
 import { apiService } from './api';
+import { jsonDataService } from './jsonDataService';
 
 // Types for trip planning
 export interface TripPlanningRequest {
@@ -104,11 +105,41 @@ class TripPlannerService {
     activityTypes?: string[];
     budget?: number;
   }): Promise<Activity[]> {
-    const response = await apiService.post<Activity[]>('/trip-planner/activities', {
-      ...request,
-      filters
-    });
-    return response.data;
+    // For now, use JSON data service instead of API
+    const activities = jsonDataService.generateActivities(request);
+    
+    // Apply filters
+    let filteredActivities = activities;
+    
+    if (filters?.activityTypes && filters.activityTypes.length > 0) {
+      filteredActivities = activities.filter(activity => 
+        filters.activityTypes!.includes(activity.type)
+      );
+    }
+    
+    if (filters?.budget) {
+      filteredActivities = activities.filter(activity => 
+        activity.price <= filters.budget!
+      );
+    }
+    
+    // Apply sorting
+    if (filters?.sortBy) {
+      filteredActivities.sort((a, b) => {
+        switch (filters.sortBy) {
+          case 'rating':
+            return b.rating - a.rating;
+          case 'price':
+            return a.price - b.price;
+          case 'popularity':
+          case 'theme_match':
+          default:
+            return 0; // Keep original order
+        }
+      });
+    }
+    
+    return filteredActivities;
   }
 
   // Get accommodation options
@@ -117,11 +148,41 @@ class TripPlannerService {
     accommodationTypes?: string[];
     budget?: number;
   }): Promise<Accommodation[]> {
-    const response = await apiService.post<Accommodation[]>('/trip-planner/accommodation', {
-      ...request,
-      filters
-    });
-    return response.data;
+    // For now, use JSON data service instead of API
+    const accommodation = jsonDataService.generateAccommodation(request);
+    
+    // Apply filters
+    let filteredAccommodation = accommodation;
+    
+    if (filters?.accommodationTypes && filters.accommodationTypes.length > 0) {
+      filteredAccommodation = accommodation.filter(acc => 
+        filters.accommodationTypes!.includes(acc.type)
+      );
+    }
+    
+    if (filters?.budget) {
+      filteredAccommodation = accommodation.filter(acc => 
+        (acc.pricePerNight * acc.totalNights) <= filters.budget!
+      );
+    }
+    
+    // Apply sorting
+    if (filters?.sortBy) {
+      filteredAccommodation.sort((a, b) => {
+        switch (filters.sortBy) {
+          case 'rating':
+            return b.rating - a.rating;
+          case 'price':
+            return a.pricePerNight - b.pricePerNight;
+          case 'location':
+          case 'theme_match':
+          default:
+            return 0; // Keep original order
+        }
+      });
+    }
+    
+    return filteredAccommodation;
   }
 
   // Get transportation options
@@ -129,185 +190,53 @@ class TripPlannerService {
     sortBy?: 'price' | 'duration' | 'convenience';
     types?: string[];
   }): Promise<Transportation[]> {
-    const response = await apiService.post<Transportation[]>('/trip-planner/transportation', {
-      ...request,
-      filters
-    });
-    return response.data;
+    // For now, use JSON data service instead of API
+    const transportation = jsonDataService.generateTransportation(request);
+    
+    // Apply filters
+    let filteredTransportation = transportation;
+    
+    if (filters?.types && filters.types.length > 0) {
+      filteredTransportation = transportation.filter(transport => 
+        filters.types!.includes(transport.type)
+      );
+    }
+    
+    // Apply sorting
+    if (filters?.sortBy) {
+      filteredTransportation.sort((a, b) => {
+        switch (filters.sortBy) {
+          case 'price':
+            return a.price - b.price;
+          case 'duration':
+            // Parse duration strings (e.g., "12h 30m" -> 12.5)
+            const parseDuration = (duration: string) => {
+              const match = duration.match(/(\d+)h\s*(\d+)?m?/);
+              if (match) {
+                const hours = parseInt(match[1]);
+                const minutes = match[2] ? parseInt(match[2]) : 0;
+                return hours + (minutes / 60);
+              }
+              return 0;
+            };
+            return parseDuration(a.duration) - parseDuration(b.duration);
+          case 'convenience':
+          default:
+            return 0; // Keep original order
+        }
+      });
+    }
+    
+    return filteredTransportation;
   }
 
   // Generate complete trip plan
   async generateTripPlan(request: TripPlanningRequest): Promise<TripPlan> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Simulate API delay for realistic experience
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Mock data for demonstration
-    const mockTripPlan: TripPlan = {
-      id: 'mock-plan-' + Date.now(),
-      destination: request.destination,
-      startDate: request.startDate,
-      endDate: request.endDate,
-      totalBudget: request.budget,
-      activities: [
-        {
-          id: '1',
-          name: 'Beach Club',
-          description: 'Relax at a luxury beach club',
-          type: 'beach',
-          rating: 4.8,
-          price: 45,
-          duration: '4 hours',
-          date: 'Dec 16',
-          image: '',
-          location: 'Seminyak',
-          isSelected: false,
-          theme: 'tropical'
-        },
-        {
-          id: '2',
-          name: 'Temple Tour',
-          description: 'Visit ancient temples',
-          type: 'culture',
-          rating: 4.6,
-          price: 25,
-          duration: '3 hours',
-          date: 'Dec 17',
-          image: '',
-          location: 'Ubud',
-          isSelected: false,
-          theme: 'cultural'
-        },
-        {
-          id: '3',
-          name: 'Volcano Hike',
-          description: 'Hike an active volcano',
-          type: 'adventure',
-          rating: 4.9,
-          price: 65,
-          duration: '8 hours',
-          date: 'Dec 18',
-          image: '',
-          location: 'Mount Batur',
-          isSelected: false,
-          theme: 'adventure'
-        }
-      ],
-      accommodation: [
-        {
-          id: '1',
-          name: 'Luxury Resort',
-          description: '5-star beachfront resort',
-          type: 'resort',
-          rating: 5.0,
-          pricePerNight: 180,
-          location: 'Seminyak',
-          distanceToBeach: '2km to beach',
-          image: '',
-          isSelected: false,
-          theme: 'luxury',
-          totalNights: request.duration
-        },
-        {
-          id: '2',
-          name: 'Beach Villa',
-          description: 'Private villa with pool',
-          type: 'villa',
-          rating: 4.7,
-          pricePerNight: 120,
-          location: 'Canggu',
-          distanceToBeach: 'Beachfront',
-          image: '',
-          isSelected: false,
-          theme: 'tropical',
-          totalNights: request.duration
-        }
-      ],
-      transportation: [
-        {
-          id: '1',
-          type: 'flight',
-          name: 'KLM Direct',
-          description: 'Direct flight to Bali',
-          duration: '15h 30m',
-          price: 850,
-          from: request.departureCity,
-          to: `${request.destination} (DPS)`,
-          isSelected: false,
-          details: {
-            airline: 'KLM',
-            stops: 0,
-            class: 'Economy'
-          }
-        },
-        {
-          id: '2',
-          type: 'flight',
-          name: 'Emirates +1',
-          description: 'Flight with one stop',
-          duration: '18h 45m',
-          price: 720,
-          from: request.departureCity,
-          to: `${request.destination} (DPS)`,
-          isSelected: false,
-          details: {
-            airline: 'Emirates',
-            stops: 1,
-            class: 'Economy'
-          }
-        },
-        {
-          id: '3',
-          type: 'local_transport',
-          name: 'Scooter Rental',
-          description: 'Daily scooter rental',
-          duration: '24 hours',
-          price: 15,
-          from: 'Hotel',
-          to: 'Various',
-          isSelected: false
-        },
-        {
-          id: '4',
-          type: 'local_transport',
-          name: 'Airport Transfer',
-          description: 'Private airport transfer',
-          duration: '1 hour',
-          price: 25,
-          from: 'Airport',
-          to: 'Hotel',
-          isSelected: false
-        }
-      ],
-      itinerary: [
-        {
-          date: request.startDate,
-          activities: [],
-          notes: 'Arrive → Check-in → Welcome dinner'
-        },
-        {
-          date: '2025-12-16',
-          activities: [],
-          notes: 'Beach Club → Sunset viewing'
-        },
-        {
-          date: '2025-12-17',
-          activities: [],
-          notes: 'Temple Tour → Spa treatment'
-        },
-        {
-          date: '2025-12-18',
-          activities: [],
-          notes: 'Volcano Hike → Free day → Cultural show'
-        }
-      ],
-      summary: {
-        totalCost: 0,
-        withinBudget: true,
-        theme: 'tropical'
-      }
-    };
-
-    return mockTripPlan;
+    // Use JSON data service to generate trip plan
+    return jsonDataService.generateTripPlan(request);
   }
 
   // Update trip plan with selections

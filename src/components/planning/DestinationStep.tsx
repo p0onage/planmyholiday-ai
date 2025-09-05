@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { TripPlanningRequest } from '../../types';
 
 interface DestinationStepProps {
@@ -9,6 +9,42 @@ interface DestinationStepProps {
 export default function DestinationStep({ request, onRequestChange }: DestinationStepProps) {
   const [localRequest, setLocalRequest] = useState<TripPlanningRequest>(request);
   const [hasChanges, setHasChanges] = useState(false);
+  const [availableDestinations, setAvailableDestinations] = useState<Array<{
+    name: string;
+    key: string;
+    image: string;
+    description: string;
+  }>>([]);
+
+  // Load available destinations from JSON data
+  useEffect(() => {
+    const destinations = [
+      {
+        name: 'Bali, Indonesia',
+        key: 'bali',
+        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center',
+        description: 'Tropical Paradise'
+      },
+      {
+        name: 'Tokyo, Japan',
+        key: 'tokyo',
+        image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
+        description: 'Modern Metropolis'
+      },
+      {
+        name: 'Santorini, Greece',
+        key: 'santorini',
+        image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=400&h=300&fit=crop&crop=center',
+        description: 'Romantic Sunset'
+      }
+    ];
+    setAvailableDestinations(destinations);
+  }, []);
+
+  // Sync local state with request prop changes
+  useEffect(() => {
+    setLocalRequest(request);
+  }, [request]);
 
   const calculateDuration = () => {
     const start = new Date(localRequest.startDate);
@@ -33,6 +69,14 @@ export default function DestinationStep({ request, onRequestChange }: Destinatio
 
   const handleTextChange = (field: 'destination' | 'departureCity', value: string) => {
     handleInputChange(field, value);
+  };
+
+  const handleDestinationChange = (destinationKey: string) => {
+    const destination = availableDestinations.find(d => d.key === destinationKey);
+    if (destination) {
+      // Update destination directly
+      onRequestChange({ destination: destination.name });
+    }
   };
 
   const handleApplyChanges = () => {
@@ -135,110 +179,60 @@ export default function DestinationStep({ request, onRequestChange }: Destinatio
 
         {/* Holiday Destinations - Horizontal Scrollable Cards */}
         <div className="space-y-3">
-          <label className="text-sm font-medium text-gray-700">Choose Your Holiday</label>
+          <label className="text-sm font-medium text-gray-700">Choose Your Holiday Destination</label>
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {[
-              { 
-                name: 'Bali Tropical Escape', 
-                image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center',
-                description: 'Beaches & Islands',
-                key: 'bali_tropical'
-              },
-              { 
-                name: 'Swiss Alps Adventure', 
-                image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop&crop=center',
-                description: 'Hiking & Outdoor',
-                key: 'swiss_adventure'
-              },
-              { 
-                name: 'Rome Cultural Journey', 
-                image: 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=400&h=300&fit=crop&crop=center',
-                description: 'History & Art',
-                key: 'rome_culture'
-              },
-              { 
-                name: 'Thailand Wellness Retreat', 
-                image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center',
-                description: 'Spa & Wellness',
-                key: 'thailand_relaxation'
-              },
-              { 
-                name: 'Tuscany Food & Wine', 
-                image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop&crop=center',
-                description: 'Culinary Tours',
-                key: 'tuscany_food'
-              },
-              { 
-                name: 'Maldives Beach Paradise', 
-                image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop&crop=center',
-                description: 'Coastal Getaway',
-                key: 'maldives_beach'
-              },
-              { 
-                name: 'Tokyo City Break', 
-                image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
-                description: 'Urban Exploration',
-                key: 'tokyo_city'
-              },
-              { 
-                name: 'Costa Rica Nature', 
-                image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop&crop=center',
-                description: 'Wildlife & Parks',
-                key: 'costa_rica_nature'
-              }
-            ].map((theme) => {
-              const isSelected = localRequest.preferences?.themes?.includes(theme.key);
+            {availableDestinations.map((destination) => {
+              const isSelected = request.destination === destination.name;
               return (
                 <div
-                  key={theme.key}
-                  className={`flex-shrink-0 w-44 rounded-lg border-2 transition-all duration-200 overflow-hidden ${
+                  key={destination.key}
+                  className={`flex-shrink-0 w-44 rounded-lg border-2 transition-all duration-200 overflow-hidden cursor-pointer ${
                     isSelected
                       ? 'border-blue-500 shadow-md'
                       : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                   }`}
+                  onClick={() => handleDestinationChange(destination.key)}
                 >
                   {/* Image Container */}
                   <div className="relative h-28">
                     {/* Background Image */}
                     <div 
                       className="absolute inset-0 bg-cover bg-center"
-                      style={{ backgroundImage: `url(${theme.image})` }}
+                      style={{ backgroundImage: `url(${destination.image})` }}
                     />
                     
                     {/* Selection Button Overlay */}
-                    <button
+                    <div
                       className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold transition-all duration-200 ${
                         isSelected
-                          ? 'bg-blue-500 hover:bg-blue-600'
-                          : 'bg-black bg-opacity-50 hover:bg-opacity-70'
+                          ? 'bg-blue-500'
+                          : 'bg-black bg-opacity-50'
                       }`}
-                      onClick={() => {
-                        // Only allow one theme selection
-                        const newThemes = isSelected ? [] : [theme.key];
-                        handleInputChange('preferences', { 
-                          ...localRequest.preferences, 
-                          themes: newThemes 
-                        });
-                      }}
                     >
                       {isSelected ? '✓' : '+'}
-                    </button>
+                    </div>
                   </div>
                   
                   {/* Content Below Image */}
                   <div className="p-3 bg-white">
                     <div className="text-sm font-semibold text-center leading-tight text-gray-900">
-                      {theme.name}
+                      {destination.name}
                     </div>
                     <div className="text-xs text-center leading-tight text-gray-600 mt-1">
-                      {theme.description}
+                      {destination.description}
                     </div>
+                    {isSelected && (
+                      <div className="text-xs text-center text-blue-600 mt-1 font-medium">
+                        Selected
+                      </div>
+                    )}
                   </div>
-            </div>
+                </div>
               );
             })}
           </div>
         </div>
+
 
         {/* Apply/Reset Buttons */}
         {hasChanges && (
