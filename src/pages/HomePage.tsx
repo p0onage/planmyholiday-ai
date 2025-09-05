@@ -1,39 +1,56 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TripGrid, TripDetailModal, SearchBar } from '../components/home';
 import type { Trip } from '../types';
 import { TravelCategory } from '../types';
-import baliImage from '../assets/images/surf-in-bali.jpg';
-
-// Demo data for initial UI
-const demoTrips: Trip[] = [
-  {
-    id: 1,
-    name: 'Bali Surf Adventure',
-    location: 'Bali, Indonesia',
-    image: baliImage,
-    types: ['Watersports', 'Beach', 'Adventure'],
-    rating: '9.3',
-    activities: ['Surfing', 'Snorkeling', 'Yoga'],
-    budget: 'Mid-range ($$)',
-    itinerary: [
-      'Day 1: Arrival & Beach',
-      'Day 2: Surf lessons',
-      'Day 3: Explore Ubud',
-    ],
-  },
-  // Add more demo trips as needed
-];
+import { tripService } from '../services/tripService';
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<TravelCategory>(TravelCategory.Journey);
-  const [trips] = useState<Trip[]>(demoTrips);
+  const [trips, setTrips] = useState<Trip[]>([]);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load featured trips on component mount
+  useEffect(() => {
+    const loadFeaturedTrips = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const featuredTrips = await tripService.getFeaturedTrips();
+        setTrips(featuredTrips);
+      } catch (err) {
+        setError('Failed to load trips');
+        console.error('Error loading trips:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFeaturedTrips();
+  }, []);
 
   return (
     <>
       <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
       <SearchBar />
-      <TripGrid trips={trips} onView={setSelectedTrip} />
+      
+      {loading && (
+        <div className="flex justify-center items-center py-12">
+          <div className="text-lg text-gray-600">Loading featured trips...</div>
+        </div>
+      )}
+      
+      {error && (
+        <div className="flex justify-center items-center py-12">
+          <div className="text-lg text-red-600">{error}</div>
+        </div>
+      )}
+      
+      {!loading && !error && (
+        <TripGrid trips={trips} onView={setSelectedTrip} />
+      )}
+      
       <TripDetailModal trip={selectedTrip} onClose={() => setSelectedTrip(null)} />
     </>
   );

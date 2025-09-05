@@ -43,8 +43,22 @@ class TripService {
 
   // Get featured trips
   async getFeaturedTrips(): Promise<Trip[]> {
-    const response = await apiService.get<Trip[]>('/trips/featured');
-    return response.success ? response.data : [];
+    // Commented out JSON call - temporarily loading from local file
+    // const response = await apiService.get<Trip[]>('/trips/featured');
+    // return response.success ? response.data : [];
+    
+    // Load from local JSON file
+    try {
+      const response = await fetch('/data/featured-trips.json');
+      if (!response.ok) {
+        throw new Error('Failed to load featured trips');
+      }
+      const trips = await response.json();
+      return trips;
+    } catch (error) {
+      console.error('Error loading featured trips:', error);
+      return [];
+    }
   }
 
   // Get trips by category

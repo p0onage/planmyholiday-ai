@@ -1,0 +1,138 @@
+[
+  {
+    "id": 1,
+    "name": "Bali Surf Adventure",
+    "location": "Bali, Indonesia",
+    "image": "https://picsum.photos/400/300?random=1",
+    "types": ["Watersports", "Beach", "Adventure"],
+    "rating": "9.3",
+    "activities": ["Surfing", "Snorkeling", "Yoga", "Temple Visits"],
+    "budget": "Mid-range ($$)",
+    "itinerary": [
+      "Day 1: Arrival & Beach Exploration",
+      "Day 2: Surf lessons at Canggu",
+      "Day 3: Explore Ubud temples and rice terraces",
+      "Day 4: Snorkeling at Nusa Penida",
+      "Day 5: Yoga retreat and spa day"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Tokyo City Explorer",
+    "location": "Tokyo, Japan",
+    "image": "https://picsum.photos/400/300?random=2",
+    "types": ["City", "Culture", "Food"],
+    "rating": "9.1",
+    "activities": ["Temple Visits", "Shopping", "Sushi Making", "Cherry Blossom Viewing"],
+    "budget": "High-end ($$$)",
+    "itinerary": [
+      "Day 1: Arrival & Shibuya Crossing",
+      "Day 2: Senso-ji Temple & Asakusa",
+      "Day 3: Tsukiji Fish Market & Sushi Class",
+      "Day 4: Harajuku & Meiji Shrine",
+      "Day 5: Day trip to Mount Fuji"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Santorini Sunset Romance",
+    "location": "Santorini, Greece",
+    "image": "https://picsum.photos/400/300?random=3",
+    "types": ["Romance", "Beach", "Culture"],
+    "rating": "9.5",
+    "activities": ["Sunset Viewing", "Wine Tasting", "Beach Hopping", "Photography"],
+    "budget": "Luxury ($$$$)",
+    "itinerary": [
+      "Day 1: Arrival & Oia exploration",
+      "Day 2: Fira town & cable car ride",
+      "Day 3: Red Beach & Ancient Thera",
+      "Day 4: Wine tasting tour",
+      "Day 5: Sunset sailing cruise"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Costa Rica Wildlife Safari",
+    "location": "Costa Rica",
+    "image": "https://picsum.photos/400/300?random=4",
+    "types": ["Adventure", "Wildlife", "Nature"],
+    "rating": "8.9",
+    "activities": ["Wildlife Spotting", "Zip-lining", "Volcano Hiking", "Coffee Tour"],
+    "budget": "Mid-range ($$)",
+    "itinerary": [
+      "Day 1: Arrival & San José city tour",
+      "Day 2: Manuel Antonio National Park",
+      "Day 3: Arenal Volcano & hot springs",
+      "Day 4: Monteverde cloud forest",
+      "Day 5: Coffee plantation tour"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Iceland Northern Lights",
+    "location": "Reykjavik, Iceland",
+    "image": "https://picsum.photos/400/300?random=5",
+    "types": ["Adventure", "Nature", "Photography"],
+    "rating": "9.2",
+    "activities": ["Northern Lights", "Glacier Hiking", "Blue Lagoon", "Geyser Watching"],
+    "budget": "High-end ($$$)",
+    "itinerary": [
+      "Day 1: Arrival & Reykjavik city tour",
+      "Day 2: Golden Circle tour",
+      "Day 3: Blue Lagoon & geothermal areas",
+      "Day 4: Glacier hiking adventure",
+      "Day 5: Northern Lights hunting"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Morocco Desert Adventure",
+    "location": "Marrakech, Morocco",
+    "image": "https://picsum.photos/400/300?random=6",
+    "types": ["Adventure", "Culture", "Desert"],
+    "rating": "8.7",
+    "activities": ["Camel Trekking", "Desert Camping", "Souk Shopping", "Atlas Mountains"],
+    "budget": "Mid-range ($$)",
+    "itinerary": [
+      "Day 1: Arrival & Marrakech medina",
+      "Day 2: Atlas Mountains day trip",
+      "Day 3: Desert safari to Merzouga",
+      "Day 4: Camel trek & desert camping",
+      "Day 5: Return via Ait Ben Haddou"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "New Zealand Road Trip",
+    "location": "South Island, New Zealand",
+    "image": "https://picsum.photos/400/300?random=7",
+    "types": ["Adventure", "Nature", "Road Trip"],
+    "rating": "9.4",
+    "activities": ["Hiking", "Bungee Jumping", "Milford Sound", "Wine Tasting"],
+    "budget": "Mid-range ($$)",
+    "itinerary": [
+      "Day 1: Christchurch arrival",
+      "Day 2: Lake Tekapo & stargazing",
+      "Day 3: Queenstown adventure activities",
+      "Day 4: Milford Sound cruise",
+      "Day 5: Wanaka & wine country"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Dubai Luxury Experience",
+    "location": "Dubai, UAE",
+    "image": "https://picsum.photos/400/300?random=8",
+    "types": ["Luxury", "City", "Shopping"],
+    "rating": "8.8",
+    "activities": ["Burj Khalifa", "Desert Safari", "Shopping", "Luxury Dining"],
+    "budget": "Luxury ($$$$)",
+    "itinerary": [
+      "Day 1: Arrival & Dubai Mall",
+      "Day 2: Burj Khalifa & Dubai Fountain",
+      "Day 3: Desert safari & camel riding",
+      "Day 4: Palm Jumeirah & Atlantis",
+      "Day 5: Gold Souk & spice market"
+    ]
+  }
+]

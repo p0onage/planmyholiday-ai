@@ -7,9 +7,17 @@ export const appConfig = {
   
   // API Configuration
   api: {
-    baseUrl: process.env.REACT_APP_API_BASE_URL || 'https://api.planmyholiday.ai',
+    baseUrl: import.meta.env.VITE_API_BASE_URL || 'https://api.planmyholiday.ai',
     timeout: 10000, // 10 seconds
     retryAttempts: 3,
+  },
+
+  // External API Services
+  externalApis: {
+    ipgeolocation: {
+      apiKey: '028689979e854db0b0b5f81c27490f8b',
+      baseUrl: 'https://api.ipgeolocation.io/ipgeo',
+    },
   },
 
   // Feature flags
