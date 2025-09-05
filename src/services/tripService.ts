@@ -49,7 +49,7 @@ class TripService {
     
     // Load from local JSON file
     try {
-      const response = await fetch('/data/featured-trips.json');
+      const response = await fetch(`${import.meta.env.BASE_URL}data/featured-trips.json`);
       if (!response.ok) {
         throw new Error('Failed to load featured trips');
       }
