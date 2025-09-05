@@ -1,4 +1,5 @@
 ﻿import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import TripPlannerForm from "../ui/TripPlannerForm";
 import FormLayout, {type FormLayoutConfig } from "../ui/FormLayout";
 import { type TripPlannerFormValues } from "../../types";
@@ -51,6 +52,7 @@ function ModalControls({ onClose }: { onClose: () => void }) {
 export default function SearchBar() {
     const [isDesktopModalOpen, setDesktopModalOpen] = useState(false);
     const [isMobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+    const navigate = useNavigate();
     
     // Get user location for default departure city
     const { location } = useLocationService();
@@ -80,6 +82,33 @@ export default function SearchBar() {
 
     const onSubmit = (data: TripPlannerFormValues) => {
         console.log("Form submitted:", data);
+        
+        // Build trip planning request object
+        const tripRequest = {
+            destination: data.query || 'Bali',
+            departureCity: data.departureCity || '',
+            startDate: data.when === 'exact' ? data.exactDates.start : new Date().toISOString().split('T')[0],
+            endDate: data.when === 'exact' ? data.exactDates.end : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            duration: data.durationValue,
+            adults: data.adults,
+            children: data.kids,
+            budget: data.budget,
+            preferences: {
+                themes: ['tropical', 'adventure'],
+                activityTypes: ['beach', 'culture'],
+                accommodationTypes: ['resort', 'villa'],
+                transportationPreferences: ['flight', 'local']
+            }
+        };
+        
+        // Navigate to planning page with data in state
+        navigate('/plan', { 
+            state: { 
+                tripRequest,
+                searchData: data // Keep original form data for reference
+            } 
+        });
+        
         setDesktopModalOpen(false);
         setMobileDrawerOpen(false);
     };
@@ -87,42 +116,46 @@ export default function SearchBar() {
     return (
         <div className="w-full max-w-4xl mx-auto p-4">
             {/* Desktop Search Bar */}
-            <div className="hidden md:flex items-center bg-gray-100 rounded-full overflow-hidden w-4/6 mx-auto">
-                {/* Search Input */}
-                <div className="flex-1 px-6 py-4">
-                    <input
-                        type="text"
-                        placeholder="Plan your holiday..."
-                        className="w-full bg-transparent text-lg placeholder-gray-500 focus:outline-none"
-                        name="query"
-                    />
-                </div>
-                
-                {/* Separator */}
-                <div className="w-px h-8 bg-gray-300"></div>
-                
-                {/* Filter Button */}
-                <button
-                    type="button"
-                    className="px-6 py-4 hover:bg-gray-200 transition-colors"
-                    onClick={() => setDesktopModalOpen(!isDesktopModalOpen)}
-                >
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-gray-700">Filters</span>
-                        <span className="text-lg">⚙️</span>
+            <div className="hidden md:block">
+                <TripPlannerForm defaultValues={defaultValues} onSubmit={onSubmit}>
+                    <div className="flex items-center bg-gray-100 rounded-full overflow-hidden w-4/6 mx-auto">
+                        {/* Search Input */}
+                        <div className="flex-1 px-6 py-4">
+                            <input
+                                type="text"
+                                placeholder="Plan your holiday..."
+                                className="w-full bg-transparent text-lg placeholder-gray-500 focus:outline-none"
+                                name="query"
+                            />
+                        </div>
+                        
+                        {/* Separator */}
+                        <div className="w-px h-8 bg-gray-300"></div>
+                        
+                        {/* Filter Button */}
+                        <button
+                            type="button"
+                            className="px-6 py-4 hover:bg-gray-200 transition-colors"
+                            onClick={() => setDesktopModalOpen(!isDesktopModalOpen)}
+                        >
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-gray-700">Filters</span>
+                                <span className="text-lg">⚙️</span>
+                            </div>
+                        </button>
+                        
+                        {/* Separator */}
+                        <div className="w-px h-8 bg-gray-300"></div>
+                        
+                        {/* Search Button */}
+                        <button 
+                            type="submit" 
+                            className="px-6 py-4 bg-primary-500 text-white hover:bg-primary-600 transition-colors"
+                        >
+                            <span className="text-lg">🔍</span>
+                        </button>
                     </div>
-                </button>
-                
-                {/* Separator */}
-                <div className="w-px h-8 bg-gray-300"></div>
-                
-                {/* Search Button */}
-                <button 
-                    type="submit" 
-                    className="px-6 py-4 bg-primary-500 text-white hover:bg-primary-600 transition-colors"
-                >
-                    <span className="text-lg">🔍</span>
-                </button>
+                </TripPlannerForm>
             </div>
 
             {/* Desktop Modal - Slides down from search bar */}

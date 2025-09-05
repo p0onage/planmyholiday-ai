@@ -74,3 +74,6 @@ export interface TripPlannerFormValues {
 
 // Re-export location types
 export * from './location';
+
+// Re-export trip planner types
+export * from '../services/tripPlannerService';
