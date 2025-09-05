@@ -3,6 +3,7 @@ export { WhenToGoInput } from './WhenToGoInput';
 export { DurationInput } from './DurationInput';
 export { BudgetInput } from './BudgetInput';
 export { GroupSizeInput } from './GroupSizeInput';
+export { DepartureCityInput } from './DepartureCityInput';
 
 // Types
 export type { FormInputLayout, FormInputProps } from './types';

@@ -17,6 +17,7 @@ export const DEFAULT_FORM_VALUES = {
   budget: 0,
   adults: 1,
   kids: 0,
+  departureCity: "",
 };
 
 // Trip categories

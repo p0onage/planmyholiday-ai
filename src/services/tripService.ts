@@ -89,6 +89,7 @@ class TripService {
   formValuesToSearchParams(formValues: TripPlannerFormValues): TripSearchParams {
     return {
       query: formValues.query || undefined,
+      location: formValues.departureCity || undefined,
       budget: formValues.budget || undefined,
       duration: formValues.durationValue || undefined,
       when: formValues.when === 'exact' 

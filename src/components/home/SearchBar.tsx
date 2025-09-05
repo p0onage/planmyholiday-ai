@@ -3,6 +3,7 @@ import TripPlannerForm from "../ui/TripPlannerForm";
 import FormLayout, {type FormLayoutConfig } from "../ui/FormLayout";
 import { type TripPlannerFormValues } from "../../types";
 import { useFormContext } from "react-hook-form";
+import { useLocationService } from "../../hooks/useLocationService";
 
 // Modal controls component that can access form context
 function ModalControls({ onClose }: { onClose: () => void }) {
@@ -21,6 +22,7 @@ function ModalControls({ onClose }: { onClose: () => void }) {
             budget: 0,
             adults: 1,
             kids: 0,
+            departureCity: "",
         });
     };
 
@@ -46,10 +48,12 @@ function ModalControls({ onClose }: { onClose: () => void }) {
     );
 }
 
-export default function 
-() {
+export default function SearchBar() {
     const [isDesktopModalOpen, setDesktopModalOpen] = useState(false);
     const [isMobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+    
+    // Get user location for default departure city
+    const { location } = useLocationService();
 
     const defaultValues: TripPlannerFormValues = {
         query: "",
@@ -63,10 +67,12 @@ export default function
         budget: 0,
         adults: 1,
         kids: 0,
+        departureCity: location?.city || "",
     };
 
     const singleColumnConfig : FormLayoutConfig  = {
         whenToGo: { fullWidth: true },
+        departureCity: { fullWidth: true },
         duration: { fullWidth: true },
         budget: { fullWidth: true },
         groupSize: { fullWidth: true },

@@ -69,6 +69,7 @@ export interface TripPlannerFormValues {
   budget: number;
   adults: number;
   kids: number;
+  departureCity: string;
 }
 
 // Re-export location types

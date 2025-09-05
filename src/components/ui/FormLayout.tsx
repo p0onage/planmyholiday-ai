@@ -1,8 +1,9 @@
-import { WhenToGoInput, DurationInput, BudgetInput, GroupSizeInput, type FormInputLayout } from "./index";
+import { WhenToGoInput, DurationInput, BudgetInput, GroupSizeInput, DepartureCityInput, type FormInputLayout } from "./index";
 
 // Layout configuration for the entire form
 export interface FormLayoutConfig {
   whenToGo?: FormInputLayout;
+  departureCity?: FormInputLayout;
   duration?: FormInputLayout;
   budget?: FormInputLayout;
   groupSize?: FormInputLayout;
@@ -16,6 +17,7 @@ interface FormLayoutProps {
 // Default layout configuration (Layout Option 2: Progressive Disclosure)
 const defaultConfig: FormLayoutConfig = {
   whenToGo: { fullWidth: true }, // Full width for most important field
+  departureCity: { fullWidth: true }, // Full width for departure city
   duration: { span: 1 }, // Half width
   budget: { span: 1 }, // Half width  
   groupSize: { fullWidth: true }, // Full width
@@ -31,13 +33,18 @@ export default function FormLayout({ config = defaultConfig, className = "" }: F
         <WhenToGoInput layout={layoutConfig.whenToGo} />
       </div>
 
-      {/* Row 2: Duration and Budget (Side by Side) */}
+      {/* Row 2: Departure City (Full Width) */}
+      <div className="w-full">
+        <DepartureCityInput layout={layoutConfig.departureCity} />
+      </div>
+
+      {/* Row 3: Duration and Budget (Side by Side) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <DurationInput layout={layoutConfig.duration} />
         <BudgetInput layout={layoutConfig.budget} />
       </div>
 
-      {/* Row 3: Group Size (Full Width) */}
+      {/* Row 4: Group Size (Full Width) */}
       <div className="w-full">
         <GroupSizeInput layout={layoutConfig.groupSize} />
       </div>
