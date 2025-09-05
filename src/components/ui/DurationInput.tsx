@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { type TripPlannerFormValues } from "../../types";
-import type { FormInputLayout, FormInputProps } from "./types";
+import type {  FormInputProps } from "./types";
 
 // 2. Trip Duration
 export function DurationInput({ layout }: FormInputProps = {}) {

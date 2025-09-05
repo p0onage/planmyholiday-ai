@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import { type TripPlannerFormValues } from "../../types";
 import { useLocation } from "../../providers/LocationProvider";
-import type { FormInputLayout, FormInputProps } from "./types";
+import type {  FormInputProps } from "./types";
 
 // 3. Budget
 export function BudgetInput({ layout }: FormInputProps = {}) {

@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { type TripPlannerFormValues } from "../../types";
-import type { FormInputLayout, FormInputProps } from "./types";
+import type {  FormInputProps } from "./types";
 
 // 4. Group Size
 export function GroupSizeInput({ layout }: FormInputProps = {}) {

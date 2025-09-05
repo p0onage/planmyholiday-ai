@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { type TripPlannerFormValues } from "../../types";
-import type { FormInputLayout, FormInputProps } from "./types";
+import type {  FormInputProps } from "./types";
 
 // 1. When To Go
 export function WhenToGoInput({ layout }: FormInputProps = {}) {
