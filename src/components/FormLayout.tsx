@@ -78,3 +78,4 @@ export const customConfig: FormLayoutConfig = {
   budget: { fullWidth: true },
   groupSize: { span: 1 },
 };
+
