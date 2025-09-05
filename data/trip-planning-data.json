@@ -1,0 +1,634 @@
+{
+  "destinations": {
+    "bali": {
+      "name": "Bali, Indonesia",
+      "country": "Indonesia",
+      "continent": "Asia",
+      "currency": "IDR",
+      "timezone": "WITA",
+      "languages": ["Indonesian", "English"],
+      "bestTimeToVisit": "April-October",
+      "climate": "Tropical",
+      "popularThemes": ["beach", "culture", "adventure", "wellness", "romance"]
+    },
+    "tokyo": {
+      "name": "Tokyo, Japan",
+      "country": "Japan",
+      "continent": "Asia",
+      "currency": "JPY",
+      "timezone": "JST",
+      "languages": ["Japanese", "English"],
+      "bestTimeToVisit": "March-May, September-November",
+      "climate": "Temperate",
+      "popularThemes": ["culture", "food", "city", "technology", "nature"]
+    },
+    "santorini": {
+      "name": "Santorini, Greece",
+      "country": "Greece",
+      "continent": "Europe",
+      "currency": "EUR",
+      "timezone": "EET",
+      "languages": ["Greek", "English"],
+      "bestTimeToVisit": "May-October",
+      "climate": "Mediterranean",
+      "popularThemes": ["romance", "beach", "culture", "luxury", "photography"]
+    }
+  },
+  "activities": {
+    "bali": [
+      {
+        "id": "bali-surf-1",
+        "name": "Canggu Surf Lessons",
+        "description": "Learn to surf at one of Bali's most famous surf spots with professional instructors",
+        "type": "watersports",
+        "category": "adventure",
+        "rating": 4.8,
+        "price": 45,
+        "duration": "4 hours",
+        "location": "Canggu",
+        "image": "https://picsum.photos/400/300?random=surf",
+        "difficulty": "beginner",
+        "groupSize": "1-8 people",
+        "includes": ["Equipment", "Instructor", "Photos", "Refreshments"],
+        "bestTime": "Morning",
+        "ageRestriction": "8+",
+        "themes": ["adventure", "beach", "watersports"]
+      },
+      {
+        "id": "bali-temple-1",
+        "name": "Ubud Temple Tour",
+        "description": "Explore ancient Hindu temples and learn about Balinese culture and spirituality",
+        "type": "culture",
+        "category": "sightseeing",
+        "rating": 4.6,
+        "price": 25,
+        "duration": "3 hours",
+        "location": "Ubud",
+        "image": "https://picsum.photos/400/300?random=temple",
+        "difficulty": "easy",
+        "groupSize": "1-15 people",
+        "includes": ["Guide", "Transportation", "Temple entrance fees"],
+        "bestTime": "Morning",
+        "ageRestriction": "All ages",
+        "themes": ["culture", "spiritual", "history"]
+      },
+      {
+        "id": "bali-volcano-1",
+        "name": "Mount Batur Sunrise Hike",
+        "description": "Hike to the summit of an active volcano for breathtaking sunrise views",
+        "type": "adventure",
+        "category": "hiking",
+        "rating": 4.9,
+        "price": 65,
+        "duration": "8 hours",
+        "location": "Mount Batur",
+        "image": "https://picsum.photos/400/300?random=volcano",
+        "difficulty": "moderate",
+        "groupSize": "1-12 people",
+        "includes": ["Guide", "Breakfast", "Transportation", "Safety equipment"],
+        "bestTime": "Early morning",
+        "ageRestriction": "12+",
+        "themes": ["adventure", "nature", "hiking", "sunrise"]
+      },
+      {
+        "id": "bali-yoga-1",
+        "name": "Beachfront Yoga Session",
+        "description": "Practice yoga with ocean views and gentle sea breeze",
+        "type": "wellness",
+        "category": "yoga",
+        "rating": 4.7,
+        "price": 30,
+        "duration": "1.5 hours",
+        "location": "Seminyak Beach",
+        "image": "https://picsum.photos/400/300?random=yoga",
+        "difficulty": "all levels",
+        "groupSize": "1-20 people",
+        "includes": ["Yoga mat", "Instructor", "Water", "Towel"],
+        "bestTime": "Sunrise/Sunset",
+        "ageRestriction": "All ages",
+        "themes": ["wellness", "beach", "relaxation"]
+      },
+      {
+        "id": "bali-snorkel-1",
+        "name": "Nusa Penida Snorkeling",
+        "description": "Snorkel in crystal clear waters and spot manta rays and colorful fish",
+        "type": "watersports",
+        "category": "snorkeling",
+        "rating": 4.8,
+        "price": 55,
+        "duration": "6 hours",
+        "location": "Nusa Penida",
+        "image": "https://picsum.photos/400/300?random=snorkel",
+        "difficulty": "easy",
+        "groupSize": "1-10 people",
+        "includes": ["Equipment", "Boat transfer", "Lunch", "Guide"],
+        "bestTime": "Morning",
+        "ageRestriction": "8+",
+        "themes": ["watersports", "nature", "marine life"]
+      }
+    ],
+    "tokyo": [
+      {
+        "id": "tokyo-temple-1",
+        "name": "Senso-ji Temple Visit",
+        "description": "Explore Tokyo's oldest temple and experience traditional Japanese culture",
+        "type": "culture",
+        "category": "sightseeing",
+        "rating": 4.5,
+        "price": 15,
+        "duration": "2 hours",
+        "location": "Asakusa",
+        "image": "https://picsum.photos/400/300?random=tokyo-temple",
+        "difficulty": "easy",
+        "groupSize": "1-20 people",
+        "includes": ["Guide", "Temple information"],
+        "bestTime": "Morning",
+        "ageRestriction": "All ages",
+        "themes": ["culture", "spiritual", "history"]
+      },
+      {
+        "id": "tokyo-sushi-1",
+        "name": "Sushi Making Class",
+        "description": "Learn to make authentic sushi from a professional chef",
+        "type": "culture",
+        "category": "cooking",
+        "rating": 4.9,
+        "price": 80,
+        "duration": "2.5 hours",
+        "location": "Tsukiji",
+        "image": "https://picsum.photos/400/300?random=sushi",
+        "difficulty": "beginner",
+        "groupSize": "1-8 people",
+        "includes": ["Ingredients", "Chef instructor", "Lunch", "Recipe"],
+        "bestTime": "Morning/Afternoon",
+        "ageRestriction": "12+",
+        "themes": ["culture", "food", "cooking"]
+      },
+      {
+        "id": "tokyo-shibuya-1",
+        "name": "Shibuya Crossing Experience",
+        "description": "Navigate the world's busiest pedestrian crossing and explore the area",
+        "type": "culture",
+        "category": "sightseeing",
+        "rating": 4.3,
+        "price": 20,
+        "duration": "3 hours",
+        "location": "Shibuya",
+        "image": "https://picsum.photos/400/300?random=shibuya",
+        "difficulty": "easy",
+        "groupSize": "1-15 people",
+        "includes": ["Guide", "Area map", "Photo spots"],
+        "bestTime": "Evening",
+        "ageRestriction": "All ages",
+        "themes": ["culture", "city", "photography"]
+      },
+      {
+        "id": "tokyo-fuji-1",
+        "name": "Mount Fuji Day Trip",
+        "description": "Visit the iconic Mount Fuji and surrounding lakes",
+        "type": "nature",
+        "category": "sightseeing",
+        "rating": 4.7,
+        "price": 120,
+        "duration": "10 hours",
+        "location": "Mount Fuji",
+        "image": "https://picsum.photos/400/300?random=fuji",
+        "difficulty": "easy",
+        "groupSize": "1-25 people",
+        "includes": ["Transportation", "Guide", "Lunch", "Entrance fees"],
+        "bestTime": "Morning",
+        "ageRestriction": "All ages",
+        "themes": ["nature", "photography", "landmarks"]
+      }
+    ],
+    "santorini": [
+      {
+        "id": "santorini-sunset-1",
+        "name": "Oia Sunset Viewing",
+        "description": "Watch the world's most beautiful sunset from the iconic Oia village",
+        "type": "culture",
+        "category": "sightseeing",
+        "rating": 4.9,
+        "price": 25,
+        "duration": "2 hours",
+        "location": "Oia",
+        "image": "https://picsum.photos/400/300?random=sunset",
+        "difficulty": "easy",
+        "groupSize": "1-30 people",
+        "includes": ["Guide", "Best viewing spots", "Photography tips"],
+        "bestTime": "Evening",
+        "ageRestriction": "All ages",
+        "themes": ["romance", "photography", "sunset"]
+      },
+      {
+        "id": "santorini-wine-1",
+        "name": "Wine Tasting Tour",
+        "description": "Sample local wines and learn about Santorini's unique viticulture",
+        "type": "culture",
+        "category": "food",
+        "rating": 4.8,
+        "price": 60,
+        "duration": "3 hours",
+        "location": "Various wineries",
+        "image": "https://picsum.photos/400/300?random=wine",
+        "difficulty": "easy",
+        "groupSize": "1-12 people",
+        "includes": ["Wine tastings", "Sommelier", "Cheese pairing", "Transportation"],
+        "bestTime": "Afternoon",
+        "ageRestriction": "18+",
+        "themes": ["culture", "food", "luxury"]
+      },
+      {
+        "id": "santorini-beach-1",
+        "name": "Red Beach Exploration",
+        "description": "Visit the famous red sand beach and volcanic landscapes",
+        "type": "nature",
+        "category": "beach",
+        "rating": 4.6,
+        "price": 35,
+        "duration": "4 hours",
+        "location": "Red Beach",
+        "image": "https://picsum.photos/400/300?random=red-beach",
+        "difficulty": "easy",
+        "groupSize": "1-15 people",
+        "includes": ["Transportation", "Guide", "Beach equipment"],
+        "bestTime": "Morning/Afternoon",
+        "ageRestriction": "All ages",
+        "themes": ["nature", "beach", "photography"]
+      }
+    ]
+  },
+  "accommodation": {
+    "bali": [
+      {
+        "id": "bali-resort-1",
+        "name": "The St. Regis Bali Resort",
+        "description": "Luxury beachfront resort with world-class amenities and stunning ocean views",
+        "type": "resort",
+        "category": "luxury",
+        "rating": 4.9,
+        "pricePerNight": 450,
+        "location": "Nusa Dua",
+        "distanceToBeach": "Beachfront",
+        "image": "https://picsum.photos/400/300?random=resort",
+        "amenities": ["Pool", "Spa", "Restaurant", "Beach access", "Concierge"],
+        "roomTypes": ["Deluxe", "Suite", "Villa"],
+        "totalNights": 7,
+        "themes": ["luxury", "beach", "wellness"]
+      },
+      {
+        "id": "bali-villa-1",
+        "name": "Villa Canggu Paradise",
+        "description": "Private villa with infinity pool and tropical garden",
+        "type": "villa",
+        "category": "boutique",
+        "rating": 4.7,
+        "pricePerNight": 180,
+        "location": "Canggu",
+        "distanceToBeach": "5 minutes walk",
+        "image": "https://picsum.photos/400/300?random=villa",
+        "amenities": ["Private pool", "Kitchen", "Garden", "WiFi", "Housekeeping"],
+        "roomTypes": ["2-bedroom", "3-bedroom", "4-bedroom"],
+        "totalNights": 7,
+        "themes": ["privacy", "tropical", "family"]
+      },
+      {
+        "id": "bali-hotel-1",
+        "name": "The Seminyak Beach Resort",
+        "description": "Modern beachfront hotel with contemporary design",
+        "type": "hotel",
+        "category": "mid-range",
+        "rating": 4.5,
+        "pricePerNight": 120,
+        "location": "Seminyak",
+        "distanceToBeach": "Beachfront",
+        "image": "https://picsum.photos/400/300?random=hotel",
+        "amenities": ["Pool", "Restaurant", "Bar", "Spa", "Fitness center"],
+        "roomTypes": ["Standard", "Deluxe", "Suite"],
+        "totalNights": 7,
+        "themes": ["modern", "beach", "convenience"]
+      }
+    ],
+    "tokyo": [
+      {
+        "id": "tokyo-hotel-1",
+        "name": "The Ritz-Carlton Tokyo",
+        "description": "Luxury hotel in the heart of Tokyo with panoramic city views",
+        "type": "hotel",
+        "category": "luxury",
+        "rating": 4.8,
+        "pricePerNight": 380,
+        "location": "Roppongi",
+        "distanceToBeach": "N/A",
+        "image": "https://picsum.photos/400/300?random=tokyo-hotel",
+        "amenities": ["City views", "Spa", "Multiple restaurants", "Concierge", "Fitness center"],
+        "roomTypes": ["Deluxe", "Suite", "Club level"],
+        "totalNights": 5,
+        "themes": ["luxury", "city", "modern"]
+      },
+      {
+        "id": "tokyo-ryokan-1",
+        "name": "Traditional Ryokan Experience",
+        "description": "Authentic Japanese inn with traditional tatami rooms and kaiseki meals",
+        "type": "ryokan",
+        "category": "traditional",
+        "rating": 4.6,
+        "pricePerNight": 200,
+        "location": "Asakusa",
+        "distanceToBeach": "N/A",
+        "image": "https://picsum.photos/400/300?random=ryokan",
+        "amenities": ["Tatami rooms", "Onsen", "Kaiseki dinner", "Yukata", "Traditional service"],
+        "roomTypes": ["Standard", "Deluxe", "Suite"],
+        "totalNights": 5,
+        "themes": ["culture", "traditional", "authentic"]
+      }
+    ],
+    "santorini": [
+      {
+        "id": "santorini-cave-1",
+        "name": "Cave Hotel Oia",
+        "description": "Luxury cave hotel with caldera views and infinity pool",
+        "type": "hotel",
+        "category": "luxury",
+        "rating": 4.9,
+        "pricePerNight": 520,
+        "location": "Oia",
+        "distanceToBeach": "10 minutes drive",
+        "image": "https://picsum.photos/400/300?random=cave-hotel",
+        "amenities": ["Caldera views", "Infinity pool", "Spa", "Fine dining", "Private terraces"],
+        "roomTypes": ["Cave suite", "Honeymoon suite", "Presidential suite"],
+        "totalNights": 5,
+        "themes": ["luxury", "romance", "caldera views"]
+      },
+      {
+        "id": "santorini-villa-1",
+        "name": "Santorini Sunset Villa",
+        "description": "Private villa with panoramic sunset views and traditional architecture",
+        "type": "villa",
+        "category": "boutique",
+        "rating": 4.7,
+        "pricePerNight": 280,
+        "location": "Imerovigli",
+        "distanceToBeach": "15 minutes drive",
+        "image": "https://picsum.photos/400/300?random=santorini-villa",
+        "amenities": ["Sunset views", "Private pool", "Kitchen", "Terrace", "WiFi"],
+        "roomTypes": ["1-bedroom", "2-bedroom", "3-bedroom"],
+        "totalNights": 5,
+        "themes": ["romance", "sunset", "privacy"]
+      }
+    ]
+  },
+  "transportation": {
+    "bali": [
+      {
+        "id": "bali-flight-1",
+        "type": "flight",
+        "name": "KLM Direct Flight",
+        "description": "Direct flight from Amsterdam to Bali with KLM",
+        "duration": "15h 30m",
+        "price": 850,
+        "from": "Amsterdam (AMS)",
+        "to": "Bali (DPS)",
+        "image": "https://picsum.photos/400/300?random=flight",
+        "details": {
+          "airline": "KLM",
+          "stops": 0,
+          "class": "Economy",
+          "baggage": "23kg included",
+          "meal": "Included"
+        },
+        "themes": ["convenience", "direct", "reliable"]
+      },
+      {
+        "id": "bali-flight-2",
+        "type": "flight",
+        "name": "Emirates via Dubai",
+        "description": "Flight with one stop in Dubai, more budget-friendly option",
+        "duration": "18h 45m",
+        "price": 720,
+        "from": "Amsterdam (AMS)",
+        "to": "Bali (DPS)",
+        "image": "https://picsum.photos/400/300?random=emirates",
+        "details": {
+          "airline": "Emirates",
+          "stops": 1,
+          "class": "Economy",
+          "baggage": "23kg included",
+          "meal": "Included"
+        },
+        "themes": ["budget", "comfort", "service"]
+      },
+      {
+        "id": "bali-scooter-1",
+        "type": "local_transport",
+        "name": "Scooter Rental",
+        "description": "Daily scooter rental for exploring the island",
+        "duration": "24 hours",
+        "price": 15,
+        "from": "Hotel",
+        "to": "Various locations",
+        "image": "https://picsum.photos/400/300?random=scooter",
+        "details": {
+          "vehicle": "Honda Scoopy",
+          "fuel": "Included",
+          "helmet": "Included",
+          "insurance": "Basic coverage"
+        },
+        "themes": ["freedom", "local", "adventure"]
+      },
+      {
+        "id": "bali-transfer-1",
+        "type": "local_transport",
+        "name": "Airport Transfer",
+        "description": "Private airport transfer service",
+        "duration": "1 hour",
+        "price": 25,
+        "from": "Airport (DPS)",
+        "to": "Hotel",
+        "image": "https://picsum.photos/400/300?random=transfer",
+        "details": {
+          "vehicle": "Private car",
+          "driver": "English speaking",
+          "waiting": "30 minutes included"
+        },
+        "themes": ["convenience", "comfort", "reliable"]
+      }
+    ],
+    "tokyo": [
+      {
+        "id": "tokyo-flight-1",
+        "type": "flight",
+        "name": "Japan Airlines Direct",
+        "description": "Direct flight from Amsterdam to Tokyo with Japan Airlines",
+        "duration": "11h 45m",
+        "price": 920,
+        "from": "Amsterdam (AMS)",
+        "to": "Tokyo (NRT)",
+        "image": "https://picsum.photos/400/300?random=japan-airlines",
+        "details": {
+          "airline": "Japan Airlines",
+          "stops": 0,
+          "class": "Economy",
+          "baggage": "23kg included",
+          "meal": "Japanese cuisine"
+        },
+        "themes": ["direct", "service", "culture"]
+      },
+      {
+        "id": "tokyo-train-1",
+        "type": "local_transport",
+        "name": "JR Pass 7-Day",
+        "description": "Unlimited travel on JR trains including Shinkansen",
+        "duration": "7 days",
+        "price": 180,
+        "from": "Various stations",
+        "to": "Various destinations",
+        "image": "https://picsum.photos/400/300?random=jr-pass",
+        "details": {
+          "validity": "7 days",
+          "coverage": "All JR lines",
+          "reservations": "Included",
+          "activation": "Flexible start date"
+        },
+        "themes": ["convenience", "value", "exploration"]
+      }
+    ],
+    "santorini": [
+      {
+        "id": "santorini-flight-1",
+        "type": "flight",
+        "name": "Aegean Airlines via Athens",
+        "description": "Flight to Santorini via Athens with Aegean Airlines",
+        "duration": "6h 30m",
+        "price": 450,
+        "from": "Amsterdam (AMS)",
+        "to": "Santorini (JTR)",
+        "image": "https://picsum.photos/400/300?random=aegean",
+        "details": {
+          "airline": "Aegean Airlines",
+          "stops": 1,
+          "class": "Economy",
+          "baggage": "23kg included",
+          "meal": "Light snack"
+        },
+        "themes": ["scenic", "island", "romantic"]
+      },
+      {
+        "id": "santorini-ferry-1",
+        "type": "local_transport",
+        "name": "Ferry from Athens",
+        "description": "Scenic ferry ride from Athens to Santorini",
+        "duration": "5 hours",
+        "price": 45,
+        "from": "Piraeus Port",
+        "to": "Santorini Port",
+        "image": "https://picsum.photos/400/300?random=ferry",
+        "details": {
+          "vessel": "High-speed ferry",
+          "seating": "Economy/First class",
+          "views": "Aegean Sea",
+          "facilities": "Cafeteria, WiFi"
+        },
+        "themes": ["scenic", "relaxing", "island"]
+      }
+    ]
+  },
+  "itineraryTemplates": {
+    "bali": [
+      {
+        "day": 1,
+        "title": "Arrival & Beach Exploration",
+        "activities": ["Airport transfer", "Hotel check-in", "Beach walk", "Welcome dinner"],
+        "notes": "Relax and get oriented with the island"
+      },
+      {
+        "day": 2,
+        "title": "Surf & Culture Day",
+        "activities": ["Surf lessons", "Temple visit", "Local lunch", "Spa treatment"],
+        "notes": "Experience both adventure and culture"
+      },
+      {
+        "day": 3,
+        "title": "Volcano Adventure",
+        "activities": ["Mount Batur hike", "Sunrise viewing", "Breakfast", "Rest time"],
+        "notes": "Early start for the volcano hike"
+      },
+      {
+        "day": 4,
+        "title": "Island Exploration",
+        "activities": ["Nusa Penida trip", "Snorkeling", "Beach time", "Return to hotel"],
+        "notes": "Full day island adventure"
+      },
+      {
+        "day": 5,
+        "title": "Wellness & Relaxation",
+        "activities": ["Yoga session", "Spa day", "Shopping", "Sunset dinner"],
+        "notes": "Focus on wellness and relaxation"
+      }
+    ],
+    "tokyo": [
+      {
+        "day": 1,
+        "title": "Arrival & City Orientation",
+        "activities": ["Airport transfer", "Hotel check-in", "Shibuya crossing", "Welcome dinner"],
+        "notes": "Get familiar with Tokyo's energy"
+      },
+      {
+        "day": 2,
+        "title": "Traditional Tokyo",
+        "activities": ["Senso-ji temple", "Asakusa exploration", "Traditional lunch", "Shopping"],
+        "notes": "Immerse in traditional Japanese culture"
+      },
+      {
+        "day": 3,
+        "title": "Culinary Experience",
+        "activities": ["Tsukiji market", "Sushi making class", "Local dinner", "Evening stroll"],
+        "notes": "Deep dive into Japanese cuisine"
+      },
+      {
+        "day": 4,
+        "title": "Mount Fuji Adventure",
+        "activities": ["Mount Fuji day trip", "Lakes tour", "Photography", "Return to Tokyo"],
+        "notes": "Experience Japan's most iconic landmark"
+      },
+      {
+        "day": 5,
+        "title": "Modern Tokyo",
+        "activities": ["Harajuku", "Meiji Shrine", "Shopping", "Farewell dinner"],
+        "notes": "Explore modern and traditional Tokyo"
+      }
+    ],
+    "santorini": [
+      {
+        "day": 1,
+        "title": "Arrival & Sunset Welcome",
+        "activities": ["Airport transfer", "Hotel check-in", "Oia exploration", "Sunset viewing"],
+        "notes": "Welcome to the most beautiful sunset in the world"
+      },
+      {
+        "day": 2,
+        "title": "Caldera & Wine",
+        "activities": ["Fira town", "Cable car ride", "Wine tasting", "Local dinner"],
+        "notes": "Experience the caldera and local wines"
+      },
+      {
+        "day": 3,
+        "title": "Beach & Nature",
+        "activities": ["Red Beach", "Ancient Thera", "Beach time", "Sunset cruise"],
+        "notes": "Explore Santorini's natural beauty"
+      },
+      {
+        "day": 4,
+        "title": "Island Discovery",
+        "activities": ["Boat trip", "Hot springs", "Lunch on board", "Free time"],
+        "notes": "Discover more of the Aegean"
+      },
+      {
+        "day": 5,
+        "title": "Farewell Santorini",
+        "activities": ["Last minute shopping", "Final photos", "Check-out", "Departure"],
+        "notes": "Take in the final moments of paradise"
+      }
+    ]
+  }
+}
