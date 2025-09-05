@@ -48,34 +48,7 @@ export default function FormLayout({ config = defaultConfig, className = "" }: F
 // Alternative layout configurations you can use:
 
 // Layout Option 1: Single Column (Mobile-First)
-export const singleColumnConfig: FormLayoutConfig = {
-  whenToGo: { fullWidth: true },
-  duration: { fullWidth: true },
-  budget: { fullWidth: true },
-  groupSize: { fullWidth: true },
-};
 
-// Layout Option 3: Card-Based (2x2 Grid)
-export const cardBasedConfig: FormLayoutConfig = {
-  whenToGo: { span: 2 }, // Spans both columns
-  duration: { span: 1 },
-  budget: { span: 1 },
-  groupSize: { span: 2 }, // Spans both columns
-};
 
-// Layout Option 4: Compact (All in one row)
-export const compactConfig: FormLayoutConfig = {
-  whenToGo: { span: 1 },
-  duration: { span: 1 },
-  budget: { span: 1 },
-  groupSize: { span: 1 },
-};
 
-// Layout Option 5: Custom (Duration and Group Size share row)
-export const customConfig: FormLayoutConfig = {
-  whenToGo: { fullWidth: true },
-  duration: { span: 1 },
-  budget: { fullWidth: true },
-  groupSize: { span: 1 },
-};
 

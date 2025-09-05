@@ -1,6 +1,6 @@
 ﻿import { useState } from "react";
 import TripPlannerForm from "../ui/TripPlannerForm";
-import FormLayout, { singleColumnConfig } from "../ui/FormLayout";
+import FormLayout, {type FormLayoutConfig } from "../ui/FormLayout";
 import { type TripPlannerFormValues } from "../../types";
 import { useFormContext } from "react-hook-form";
 
@@ -46,10 +46,16 @@ function ModalControls({ onClose }: { onClose: () => void }) {
     );
 }
 
-export default function 
-() {
+export default function SearchBar() {
     const [isDesktopModalOpen, setDesktopModalOpen] = useState(false);
     const [isMobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+    const singleColumnConfig: FormLayoutConfig = {
+        whenToGo: { fullWidth: true },
+        duration: { fullWidth: true },
+        budget: { fullWidth: true },
+        groupSize: { fullWidth: true },
+    };
 
     const defaultValues: TripPlannerFormValues = {
         query: "",
