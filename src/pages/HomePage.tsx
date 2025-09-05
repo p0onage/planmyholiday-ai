@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import Header from './components/Header';
-import Tabs from "./components/Tabs.tsx";
-import TripGrid from './components/TripGrid';
-import TripDetailModal from './components/TripDetailModal';
-import type { Trip} from './types';
-import {TravelCategory} from "./types";
-import baliImage from './assets/images/surf-in-bali.jpg';
-import SearchBar from "./components/SearchBar.tsx";
-import { CurrencyProvider } from './contexts/CurrencyContext';
+import Header from '../components/Header';
+import Tabs from "../components/Tabs.tsx";
+import TripGrid from '../components/TripGrid';
+import TripDetailModal from '../components/TripDetailModal';
+import type { Trip} from '../types';
+import {TravelCategory} from "../types";
+import baliImage from '../assets/images/surf-in-bali.jpg';
+import SearchBar from "../components/SearchBar.tsx";
+import { CurrencyProvider } from '../hooks/CurrencyContext';
 
 // Demo data for initial UI
 const demoTrips: Trip[] = [
@@ -29,29 +29,17 @@ const demoTrips: Trip[] = [
   // Add more demo trips as needed
 ];
 
-export default function App() {
+export default function HomePage() {
   const [activeTab, setActiveTab] = useState<TravelCategory>(TravelCategory.Journey);
   const [trips] = useState<Trip[]>(demoTrips);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
 
-  // Simulate AI agent interaction
-  //const handlePlan = (prompt: string): void => {
-    // For now, just filter demoTrips by prompt keywords
-  //  const filtered = demoTrips.filter(trip =>
-  //    trip.name.toLowerCase().includes(prompt.toLowerCase()) ||
-  //    trip.types.some(type => type.toLowerCase().includes(prompt.toLowerCase()))
-  //  );
-  //  setTrips(filtered.length ? filtered : demoTrips);
-  //};
-
-    return (
+  return (
     <CurrencyProvider>
       <div className="min-h-screen bg-white">
         <Header />
         <main className="max-w-6xl mx-auto px-2">
           <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
-          {/* <Hero onPlan={handlePlan} /> */}
-          
           <SearchBar />
           <TripGrid trips={trips} onView={setSelectedTrip} />
           <TripDetailModal trip={selectedTrip} onClose={() => setSelectedTrip(null)} />

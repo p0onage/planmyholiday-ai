@@ -1,5 +1,6 @@
 ﻿import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import { type TripPlannerFormValues } from "../types";
+import { type TripPlannerFormValues } from "../../types";
+import React from "react";
 
 interface TripPlannerFormProps {
     defaultValues: TripPlannerFormValues;

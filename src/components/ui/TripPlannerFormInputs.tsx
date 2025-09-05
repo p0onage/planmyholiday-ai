@@ -1,6 +1,6 @@
 ﻿import { useFormContext } from "react-hook-form";
-import { type TripPlannerFormValues } from "../types";
-import { useCurrency } from "../contexts/CurrencyContext";
+import { type TripPlannerFormValues } from "../../types";
+import { useCurrency } from "../../hooks/CurrencyContext";
 
 // Layout configuration types
 export interface FormInputLayout {

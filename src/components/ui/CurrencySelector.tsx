@@ -1,4 +1,4 @@
-import { useCurrency } from '../contexts/CurrencyContext';
+import { useCurrency } from '../../hooks/CurrencyContext';
 
 export default function CurrencySelector() {
   const { currency, setCurrency, currencies } = useCurrency();

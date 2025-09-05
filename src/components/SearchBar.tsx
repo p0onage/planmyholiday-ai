@@ -1,6 +1,6 @@
 ﻿import { useState } from "react";
-import TripPlannerForm from "./TripPlannerForm";
-import FormLayout, { singleColumnConfig } from "./FormLayout";
+import TripPlannerForm from "./ui/TripPlannerForm";
+import FormLayout, { singleColumnConfig } from "./ui/FormLayout";
 import { type TripPlannerFormValues } from "../types";
 import { useFormContext } from "react-hook-form";
 
@@ -46,7 +46,8 @@ function ModalControls({ onClose }: { onClose: () => void }) {
     );
 }
 
-export default function SearchBar() {
+export default function 
+() {
     const [isDesktopModalOpen, setDesktopModalOpen] = useState(false);
     const [isMobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
