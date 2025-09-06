@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import TripPlannerForm from "../ui/TripPlannerForm";
 import FormLayout, {type FormLayoutConfig } from "../ui/FormLayout";
@@ -72,6 +72,29 @@ export default function SearchBar() {
     
     // Get user location for default departure city
     const { location } = useLocation();
+
+    // Prevent body scroll when mobile drawer is open
+    useEffect(() => {
+        if (isMobileDrawerOpen) {
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+            // Prevent touch scrolling on mobile
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+        } else {
+            // Restore body scroll
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+        }
+
+        // Cleanup on unmount
+        return () => {
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+        };
+    }, [isMobileDrawerOpen]);
 
     const defaultValues: TripPlannerFormValues = {
         query: "",
@@ -181,7 +204,7 @@ export default function SearchBar() {
 
             {/* Mobile Bottom Drawer */}
             {isMobileDrawerOpen && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-end">
+                <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-end overflow-hidden">
                     {/* Backdrop - click to close */}
                     <div 
                         className="absolute inset-0"
@@ -189,11 +212,11 @@ export default function SearchBar() {
                     />
                     
                     {/* Drawer content */}
-                    <div className="w-full max-h-[80%] bg-white rounded-t-xl relative z-10 animate-slide-up">
+                    <div className="w-full h-[85vh] bg-white rounded-t-xl relative z-10 animate-slide-up flex flex-col">
                         <TripPlannerForm defaultValues={defaultValues} onSubmit={onSubmit}>
-                            <div className="flex flex-col h-full max-h-[80vh]">
+                            <div className="flex flex-col h-full">
                                 {/* Scrollable content area */}
-                                <div className="flex-1 overflow-y-auto p-4">
+                                <div className="flex-1 overflow-y-auto p-4" style={{ maxHeight: 'calc(85vh - 80px)' }}>
                                     {/* Query Input - Mobile */}
                                     <div className="mb-6">
                                         <label className="text-sm font-semibold text-gray-700 block mb-3">
@@ -211,10 +234,10 @@ export default function SearchBar() {
                                 {/* Fixed bottom controls */}
                                 <div className="flex-shrink-0 p-4 bg-white border-t border-gray-200 rounded-b-xl">
                                     <div className="flex justify-between items-center">
-                                        <button type="reset" className="underline text-gray-600">
+                                        <button type="reset" className="underline text-gray-600 hover:text-gray-800 transition-colors">
                                             Clear all
                                         </button>
-                                        <button type="submit" className="bg-primary-500 p-3 rounded-full text-white hover:bg-primary-600 transition-colors">
+                                        <button type="submit" className="bg-primary-500 p-3 rounded-full text-white hover:bg-primary-600 transition-colors shadow-lg">
                                             🔍
                                         </button>
                                     </div>
