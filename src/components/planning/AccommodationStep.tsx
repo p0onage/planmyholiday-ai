@@ -6,7 +6,6 @@ interface AccommodationStepProps {
   accommodation: Accommodation[];
   selectedAccommodation: string[];
   onToggleAccommodation: (accommodationId: string) => void;
-  onCustomInputChange: (input: string) => void;
   onRefreshAI: () => void;
   isLoading: boolean;
 }
@@ -31,7 +30,7 @@ export default function AccommodationStep({
       'villa': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&crop=center',
       'hotel': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop&crop=center',
       'apartment': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop&crop=center',
-      'hostel': 'https://images.unsplash.com/photo-1555854877-bab0e828d46f?w=400&h=300&fit=crop&crop=center'
+      'hostel': 'https://images.unsplash.com/photo-1555854877-bab0e828d46f?w=400&h=300&fit=crop&crop=center' // 404
     };
     return imageMap[accommodation.type] || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop&crop=center';
   };
@@ -56,7 +55,6 @@ export default function AccommodationStep({
               <option value="price">Price</option>
               <option value="rating">Rating</option>
               <option value="location">Location</option>
-              <option value="theme_match">Theme Match</option>
             </select>
           </div>
           

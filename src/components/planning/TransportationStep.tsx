@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import type { TripPlanningRequest } from '../../types';
+import { useJourneySegments, useTransportOptions } from '../../hooks';
+import type { JourneySegment, TransportOption } from '../../services/tripPlannerService';
 
 interface TransportationStepProps {
   request: TripPlanningRequest;
@@ -9,70 +11,23 @@ interface TransportationStepProps {
   isLoading: boolean;
 }
 
-type TransportType = 'flight' | 'boat' | 'train' | 'drive' | 'bus' | 'local_transport' | 'rental';
-
-interface TransportOption {
-  id: string;
-  name: string;
-  type: TransportType;
-  price: number;
-  duration: string;
-  image: string;
-  description: string;
-  details?: {
-    airline?: string;
-    company?: string;
-    vehicle?: string;
-  };
-}
 
 export default function TransportationStep({
   request,
   selectedTransportation,
-  onToggleTransportation,
+    onToggleTransportation,
   onRefreshAI,
   isLoading
 }: TransportationStepProps) {
   const [sortBy, setSortBy] = useState<'price' | 'duration' | 'convenience'>('price');
   const [selectedTransportItem, setSelectedTransportItem] = useState<TransportOption | null>(null);
 
-  // Get complete journey segments
-  const getJourneySegments = () => {
-    const segments = [
-      {
-        id: 'outbound',
-        title: 'Outbound Journey',
-        route: `${request.departureCity} → ${request.destination}`,
-        description: 'International travel to your destination',
-        transportTypes: ['flight', 'boat', 'train', 'drive', 'bus'] as TransportType[]
-      },
-      {
-        id: 'local',
-        title: 'Local Transport in Bali',
-        route: 'Within Bali',
-        description: 'Getting around during your stay',
-        transportTypes: ['local_transport', 'rental'] as TransportType[]
-      },
-      {
-        id: 'intercity',
-        title: 'Inter-city Travel',
-        route: 'Ubud → Seminyak → Canggu',
-        description: 'Travel between different areas in Bali',
-        transportTypes: ['local_transport', 'rental', 'bus'] as TransportType[]
-      },
-      {
-        id: 'return',
-        title: 'Return Journey',
-        route: `${request.destination} → ${request.departureCity}`,
-        description: 'International travel back home',
-        transportTypes: ['flight', 'boat', 'train', 'drive', 'bus'] as TransportType[]
-      }
-    ];
-
-    return segments;
-  };
-
-  const journeySegments = getJourneySegments();
+  const { 
+    journeySegments, 
+    isLoading: segmentsLoading, 
+    isError: segmentsError, 
+    refetch: refetchSegments 
+  } = useJourneySegments(request);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -104,30 +59,61 @@ export default function TransportationStep({
           </div>
           
           <button
-            onClick={onRefreshAI}
-            disabled={isLoading}
+            onClick={() => {
+              onRefreshAI();
+              refetchSegments();
+            }}
+            disabled={isLoading || segmentsLoading}
             className="flex items-center gap-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm hover:bg-purple-200 disabled:opacity-50"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            {isLoading ? 'Loading...' : 'Refresh AI'}
+            {(isLoading || segmentsLoading) ? 'Loading...' : 'Refresh AI'}
           </button>
         </div>
 
         {/* Journey Segments */}
         <div className="space-y-8">
-          {journeySegments.map((segment) => (
-            <JourneySegment
-              key={segment.id}
-              segment={segment}
-              selectedTransportation={selectedTransportation}
-              onToggleTransportation={onToggleTransportation}
-              onInfoClick={setSelectedTransportItem}
-              isLoading={isLoading}
+          {segmentsLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="flex items-center gap-2 text-blue-600">
+                <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span className="text-sm font-medium">Loading journey segments...</span>
+              </div>
+            </div>
+          ) : segmentsError ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <div className="text-red-600 mb-4">
+                <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <p className="text-sm font-medium">Failed to load journey segments</p>
+                <p className="text-xs text-gray-500 mt-1">Please try clicking the refresh button</p>
+              </div>
+              <button
+                onClick={() => refetchSegments()}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : (
+            journeySegments.map((segment) => (
+              <JourneySegment
+                key={segment.id}
+                segment={segment}
+                request={request}
+                selectedTransportation={selectedTransportation}
+                onToggleTransportation={onToggleTransportation}
+                onInfoClick={setSelectedTransportItem}
+                isLoading={isLoading}
               />
-            ))}
-          </div>
+            ))
+          )}
+        </div>
         </div>
 
       {/* Transport Info Modal */}
@@ -142,199 +128,79 @@ export default function TransportationStep({
 }
 
 interface JourneySegmentProps {
-  segment: {
-    id: string;
-    title: string;
-    route: string;
-    description: string;
-    transportTypes: TransportType[];
-  };
+  segment: JourneySegment;
+  request: TripPlanningRequest;
   selectedTransportation: string[];
   onToggleTransportation: (id: string) => void;
   onInfoClick: (transport: TransportOption) => void;
   isLoading: boolean;
 }
 
-function JourneySegment({ segment, selectedTransportation, onToggleTransportation, onInfoClick, isLoading }: JourneySegmentProps) {
-  // Mock transport options based on segment
-  const getTransportOptionsForSegment = (segmentId: string) => {
-    const segmentOptions: { [key: string]: TransportOption[] } = {
-      outbound: [
-        {
-          id: 'outbound-flight-1',
-          name: 'Direct Flight',
-          type: 'flight',
-          price: 450,
-          duration: '12h 30m',
-          image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop&crop=center',
-          description: 'Non-stop flight with full service',
-          details: { airline: 'British Airways' }
-        },
-        {
-          id: 'outbound-flight-2',
-          name: 'Budget Flight',
-          type: 'flight',
-          price: 280,
-          duration: '14h 15m',
-          image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop&crop=center',
-          description: 'One stopover, basic service',
-          details: { airline: 'EasyJet' }
-        },
-        {
-          id: 'outbound-flight-3',
-          name: 'Premium Flight',
-          type: 'flight',
-          price: 850,
-          duration: '11h 45m',
-          image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop&crop=center',
-          description: 'Business class with lounge access',
-          details: { airline: 'Emirates' }
-        }
-      ],
-      local: [
-        {
-          id: 'local-scooter',
-          name: 'Scooter Rental',
-          type: 'local_transport',
-          price: 25,
-          duration: 'Daily',
-          image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop&crop=center',
-          description: 'Perfect for exploring Bali\'s narrow roads',
-          details: { company: 'Bali Scooter Rentals' }
-        },
-        {
-          id: 'local-taxi',
-          name: 'Taxi Service',
-          type: 'local_transport',
-          price: 15,
-          duration: 'Per trip',
-          image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
-          description: 'Reliable local taxi service',
-          details: { company: 'Blue Bird Taxi' }
-        },
-        {
-          id: 'local-grab',
-          name: 'Grab/Gojek',
-          type: 'local_transport',
-          price: 8,
-          duration: 'Per trip',
-          image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
-          description: 'Ride-hailing app service',
-          details: { company: 'Grab Indonesia' }
-        }
-      ],
-      intercity: [
-        {
-          id: 'intercity-car',
-          name: 'Car Rental',
-          type: 'rental',
-          price: 45,
-          duration: 'Daily',
-          image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
-          description: 'Freedom to explore at your own pace',
-          details: { company: 'Avis Bali', vehicle: 'Compact Car' }
-        },
-        {
-          id: 'intercity-scooter',
-          name: 'Motorbike Rental',
-          type: 'rental',
-          price: 18,
-          duration: 'Daily',
-          image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop&crop=center',
-          description: 'Perfect for Bali\'s narrow roads',
-          details: { company: 'Bali Bike Rentals', vehicle: 'Honda Scooter' }
-        },
-        {
-          id: 'intercity-bus',
-          name: 'Intercity Bus',
-          type: 'bus',
-          price: 5,
-          duration: '2-3 hours',
-          image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d1197?w=400&h=300&fit=crop&crop=center',
-          description: 'Comfortable bus between cities',
-          details: { company: 'Perama Tour' }
-        },
-        {
-          id: 'intercity-private',
-          name: 'Private Driver',
-          type: 'local_transport',
-          price: 35,
-          duration: 'Per day',
-          image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
-          description: 'Private driver with local knowledge',
-          details: { company: 'Bali Private Tours' }
-        }
-      ],
-      return: [
-        {
-          id: 'return-flight-1',
-          name: 'Direct Flight',
-          type: 'flight',
-          price: 450,
-          duration: '12h 30m',
-          image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop&crop=center',
-          description: 'Non-stop flight with full service',
-          details: { airline: 'British Airways' }
-        },
-        {
-          id: 'return-flight-2',
-          name: 'Budget Flight',
-          type: 'flight',
-          price: 280,
-          duration: '14h 15m',
-          image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop&crop=center',
-          description: 'One stopover, basic service',
-          details: { airline: 'EasyJet' }
-        },
-        {
-          id: 'return-flight-3',
-          name: 'Premium Flight',
-          type: 'flight',
-          price: 850,
-          duration: '11h 45m',
-          image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop&crop=center',
-          description: 'Business class with lounge access',
-          details: { airline: 'Emirates' }
-        }
-      ]
-    };
-
-    return segmentOptions[segmentId] || [];
-  };
-
-  const transportOptions = getTransportOptionsForSegment(segment.id);
+function JourneySegment({ segment, request, selectedTransportation, onToggleTransportation, onInfoClick, isLoading }: JourneySegmentProps) {
+  // Use custom hook for transport options with React Query
+  const { 
+    transportOptions, 
+    isLoading: optionsLoading, 
+    isError: optionsError, 
+    refetch: refetchOptions 
+  } = useTransportOptions(request, segment.id);
 
   return (
     <div className="border border-gray-200 rounded-lg p-4">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">{segment.title}</h3>
-        <div className="text-sm text-blue-600 font-medium mb-1">{segment.route}</div>
-        <div className="text-sm text-gray-600">{segment.description}</div>
+        <div className="flex items-start gap-4">
+          <div 
+            className="w-16 h-16 rounded-lg bg-cover bg-center flex-shrink-0"
+            style={{ backgroundImage: `url(${segment.image})` }}
+          />
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">{segment.title}</h3>
+            <div className="text-sm text-blue-600 font-medium mb-1">{segment.route}</div>
+            <div className="text-sm text-gray-600">{segment.description}</div>
           </div>
+        </div>
+      </div>
           
       <div className="relative">
-        {isLoading && (
+        {(isLoading || optionsLoading) && (
           <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
             <div className="flex items-center gap-2 text-blue-600">
               <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-              <span className="text-sm font-medium">Refreshing {segment.title.toLowerCase()} options...</span>
+              <span className="text-sm font-medium">Loading {segment.title.toLowerCase()} options...</span>
               </div>
           </div>
         )}
         
-        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-          {transportOptions.map((option) => (
-            <TransportCard
-              key={option.id}
-              transport={option}
-              isSelected={selectedTransportation.includes(option.id)}
-              onToggle={() => onToggleTransportation(option.id)}
-              onInfoClick={() => onInfoClick(option)}
-            />
-          ))}
-        </div>
+        {optionsError ? (
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="text-red-600 mb-4">
+              <svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <p className="text-sm font-medium">Failed to load transport options</p>
+            </div>
+            <button
+              onClick={() => refetchOptions()}
+              className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+            {transportOptions.map((option) => (
+              <TransportCard
+                key={option.id}
+                transport={option}
+                isSelected={selectedTransportation.includes(option.id)}
+                onToggle={() => onToggleTransportation(option.id)}
+                onInfoClick={() => onInfoClick(option)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

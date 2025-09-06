@@ -194,7 +194,6 @@ export default function HolidayPlanningPage() {
             accommodation={accommodation}
             selectedAccommodation={selectedAccommodation}
             onToggleAccommodation={toggleAccommodation}
-            onCustomInputChange={(input) => handleCustomInputChange('accommodation', input)}
             onRefreshAI={() => console.log('Refresh AI for accommodation')}
             isLoading={isAccommodationLoading}
           />
@@ -299,7 +298,6 @@ export default function HolidayPlanningPage() {
                   accommodation={accommodation}
                   selectedAccommodation={selectedAccommodation}
                   onToggleAccommodation={toggleAccommodation}
-                  onCustomInputChange={(input) => handleCustomInputChange('accommodation', input)}
                   onRefreshAI={() => console.log('Refresh AI for accommodation')}
                   isLoading={isAccommodationLoading}
                 />

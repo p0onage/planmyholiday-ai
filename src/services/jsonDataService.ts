@@ -7,7 +7,9 @@ import type {
   Accommodation, 
   Transportation, 
   TripPlan,
-  ItineraryItem 
+  ItineraryItem,
+  JourneySegment,
+  TransportOption 
 } from './tripPlannerService';
 
 // Transform featured trips data to match our internal structure
@@ -107,6 +109,15 @@ class JsonDataService {
       .replace(/\s*,\s*\w+$/, '') // Remove country name
       .replace(/\s+/g, '');
     return this.tripData.transportation[normalizedDestination as keyof typeof this.tripData.transportation] || [];
+  }
+
+  // Get journey segments for destination
+  getDestinationJourneySegments(destination: string) {
+    // Handle full destination names like "Bali, Indonesia"
+    const normalizedDestination = destination.toLowerCase()
+      .replace(/\s*,\s*\w+$/, '') // Remove country name
+      .replace(/\s+/g, '');
+    return this.tripData.journeySegments[normalizedDestination as keyof typeof this.tripData.journeySegments] || [];
   }
 
   // Get itinerary template for destination
@@ -374,6 +385,154 @@ class JsonDataService {
         isSelected: false
       }
     ];
+  }
+
+  // Get journey segments for transportation planning
+  getJourneySegments(request: TripPlanningRequest): JourneySegment[] {
+    // Get journey segments from the comprehensive JSON data
+    const destinationSegments = this.getDestinationJourneySegments(request.destination);
+    
+    if (destinationSegments.length > 0) {
+      return destinationSegments.map((segment) => ({
+        id: segment.id,
+        title: segment.title,
+        route: segment.route.replace('Amsterdam', request.departureCity).replace('Bali', request.destination).replace('Tokyo', request.destination).replace('Santorini', request.destination),
+        description: segment.description,
+        image: segment.image,
+        transportTypes: segment.transportTypes
+      }));
+    }
+
+    // Fallback to default journey segments
+    return [
+      {
+        id: 'outbound',
+        title: 'Outbound Journey',
+        route: `${request.departureCity} → ${request.destination}`,
+        description: 'International travel to your destination',
+        image: 'https://picsum.photos/400/300?random=outbound-flight',
+        transportTypes: ['flight', 'boat', 'train', 'drive', 'bus']
+      },
+      {
+        id: 'local',
+        title: 'Local Transport',
+        route: `Within ${request.destination}`,
+        description: 'Getting around during your stay',
+        image: 'https://picsum.photos/400/300?random=local-transport',
+        transportTypes: ['local_transport', 'rental']
+      },
+      {
+        id: 'intercity',
+        title: 'Inter-city Travel',
+        route: 'Various locations',
+        description: 'Travel between different areas',
+        image: 'https://picsum.photos/400/300?random=intercity-travel',
+        transportTypes: ['local_transport', 'rental', 'bus']
+      },
+      {
+        id: 'return',
+        title: 'Return Journey',
+        route: `${request.destination} → ${request.departureCity}`,
+        description: 'International travel back home',
+        image: 'https://picsum.photos/400/300?random=return-flight',
+        transportTypes: ['flight', 'boat', 'train', 'drive', 'bus']
+      }
+    ];
+  }
+
+  // Get transport options for a specific journey segment
+  getTransportOptionsForSegment(request: TripPlanningRequest, segmentId: string): TransportOption[] {
+    // Handle full destination names like "Bali, Indonesia"
+    const normalizedDestination = request.destination.toLowerCase()
+      .replace(/\s*,\s*\w+$/, '') // Remove country name
+      .replace(/\s+/g, '');
+    
+    const destinationTransportOptions = this.tripData.transportOptions[normalizedDestination as keyof typeof this.tripData.transportOptions];
+    
+    if (destinationTransportOptions && destinationTransportOptions[segmentId as keyof typeof destinationTransportOptions]) {
+      const segmentOptions = destinationTransportOptions[segmentId as keyof typeof destinationTransportOptions] as any[];
+      return segmentOptions.map((option) => ({
+        id: option.id,
+        name: option.name,
+        type: option.type,
+        price: this.adjustPriceForBudget(option.price, request.budget),
+        duration: option.duration,
+        image: option.image,
+        description: option.description,
+        details: option.details
+      }));
+    }
+
+    // Fallback to default transport options
+    return this.getDefaultTransportOptionsForSegment(segmentId, request);
+  }
+
+  // Get default transport options for a segment (fallback)
+  private getDefaultTransportOptionsForSegment(segmentId: string, request: TripPlanningRequest): TransportOption[] {
+    const defaultOptions: { [key: string]: TransportOption[] } = {
+      outbound: [
+        {
+          id: 'default-outbound-1',
+          name: 'Direct Flight',
+          type: 'flight',
+          price: 450,
+          duration: '12h 30m',
+          image: 'https://picsum.photos/400/300?random=default-flight',
+          description: `Direct flight from ${request.departureCity} to ${request.destination}`,
+          details: {
+            airline: 'Major Airline',
+            stops: 0,
+            class: 'Economy'
+          }
+        }
+      ],
+      local: [
+        {
+          id: 'default-local-1',
+          name: 'Local Transport',
+          type: 'local_transport',
+          price: 25,
+          duration: 'Daily',
+          image: 'https://picsum.photos/400/300?random=default-local',
+          description: 'Local transportation options',
+          details: {
+            company: 'Local Service'
+          }
+        }
+      ],
+      intercity: [
+        {
+          id: 'default-intercity-1',
+          name: 'Inter-city Transport',
+          type: 'local_transport',
+          price: 35,
+          duration: '2-3 hours',
+          image: 'https://picsum.photos/400/300?random=default-intercity',
+          description: 'Transport between different areas',
+          details: {
+            company: 'Local Service'
+          }
+        }
+      ],
+      return: [
+        {
+          id: 'default-return-1',
+          name: 'Return Flight',
+          type: 'flight',
+          price: 450,
+          duration: '12h 30m',
+          image: 'https://picsum.photos/400/300?random=default-return',
+          description: `Return flight from ${request.destination} to ${request.departureCity}`,
+          details: {
+            airline: 'Major Airline',
+            stops: 0,
+            class: 'Economy'
+          }
+        }
+      ]
+    };
+
+    return defaultOptions[segmentId] || [];
   }
 
   // Generate itinerary based on destination data

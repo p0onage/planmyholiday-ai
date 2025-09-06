@@ -67,6 +67,33 @@ export interface Transportation {
   };
 }
 
+export interface JourneySegment {
+  id: string;
+  title: string;
+  route: string;
+  description: string;
+  image: string;
+  transportTypes: string[];
+}
+
+export interface TransportOption {
+  id: string;
+  name: string;
+  type: string;
+  price: number;
+  duration: string;
+  image: string;
+  description: string;
+  details?: {
+    airline?: string;
+    company?: string;
+    vehicle?: string;
+    stops?: number;
+    class?: string;
+    vessel?: string;
+  };
+}
+
 export interface ItineraryItem {
   date: string;
   activities: Activity[];
@@ -228,6 +255,21 @@ class TripPlannerService {
     }
     
     return filteredTransportation;
+  }
+
+  // Get journey segments for transportation planning
+  async getJourneySegments(request: TripPlanningRequest): Promise<JourneySegment[]> {
+    // For now, use JSON data service instead of API
+    return jsonDataService.getJourneySegments(request);
+  }
+
+  // Get transport options for a specific journey segment
+  async getTransportOptionsForSegment(
+    request: TripPlanningRequest, 
+    segmentId: string
+  ): Promise<TransportOption[]> {
+    // For now, use JSON data service instead of API
+    return jsonDataService.getTransportOptionsForSegment(request, segmentId);
   }
 
   // Generate complete trip plan
