@@ -17,37 +17,32 @@ export default function HolidayPlanningPage() {
   const [currentStep, setCurrentStep] = useState(1);
 
   // Get form data from navigation state (passed from homepage search)
-  const getInitialRequest = (): TripPlanningRequest => {
+  const getFormData = (): TripPlanningRequest => {
     // Check if data was passed via navigation state
     const stateData = pageLocation.state as { tripRequest?: TripPlanningRequest; searchData?: any } | null;
     
-    if (stateData?.tripRequest) {
-      return stateData.tripRequest;
-    }
+    // Use form data if available, otherwise use empty values
+    const searchData = stateData?.searchData;
     
-    // Get first destination from JSON data
-    const firstDestination = 'Bali, Indonesia'; // Default to Bali as first destination
-    
-    // Fallback to default values if no state data
     return {
-      destination: firstDestination,
-      departureCity: 'Amsterdam',
-      startDate: new Date().toISOString().split('T')[0],
-      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      duration: 7,
-      adults: 2,
-      children: 0,
-      budget: 2000,
+      destination: '', // Will be set by AI/hook service
+      departureCity: searchData?.departureCity || '',
+      startDate: searchData?.when === 'exact' ? searchData.exactDates.start : new Date().toISOString().split('T')[0],
+      endDate: searchData?.when === 'exact' ? searchData.exactDates.end : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      duration: searchData?.durationValue || 0,
+      adults: searchData?.adults || 0,
+      children: searchData?.kids || 0,
+      budget: searchData?.budget || 0,
       preferences: {
-        themes: [],
-        activityTypes: ['beach', 'culture'],
-        accommodationTypes: ['resort', 'villa'],
-        transportationPreferences: ['flight', 'local']
+        activityTypes: [],
+        accommodationTypes: [],
+        transportationPreferences: []
       }
     };
   };
 
-  const initialRequest = getInitialRequest();
+  const formData = getFormData();
+  const hasFormData = pageLocation.state?.searchData;
   
   // Use the real-time trip planner hook
   const {
@@ -73,13 +68,28 @@ export default function HolidayPlanningPage() {
     searchAccommodation,
     searchTransportation,
     calculateTotalCost,
-    getFilteredData
+    getFilteredData,
+    loadAllDataForRequest,
+    handleAIChatMessage
   } = useRealTimeTripPlanner({
-    initialRequest,
+    initialRequest: formData,
     enableRealTimeUpdates: true,
     debounceMs: 500
   });
   
+  // Handle initial data loading when there's a request from homepage
+  useEffect(() => {
+    if (hasFormData) {
+      // Load all data and select first destination
+      loadAllDataForRequest();
+      
+      // The search query will be passed to HolidayPreview as initialSearchQuery
+      // and set as the lastMessage to show users what prompt generated their results
+      pageLocation.state as { tripRequest?: TripPlanningRequest; searchData?: any } | null;
+
+    }
+  }, [hasFormData, loadAllDataForRequest, pageLocation.state]);
+
   // Handle request updates
   const handleRequestChange = (updates: Partial<TripPlanningRequest> | TripPlanningRequest) => {
     updateRequest(updates);
@@ -172,14 +182,14 @@ export default function HolidayPlanningPage() {
         return (
           <DestinationStep
             key={currentRequest?.destination || 'default'}
-            request={currentRequest || initialRequest}
+            request={currentRequest || formData}
             onRequestChange={handleRequestChange}
           />
         );
       case 2:
         return (
           <ActivitiesStep
-            request={currentRequest || initialRequest}
+            request={currentRequest || formData}
             activities={activities}
             selectedActivities={selectedActivities}
             onToggleActivity={toggleActivity}
@@ -191,7 +201,7 @@ export default function HolidayPlanningPage() {
       case 3:
         return (
           <AccommodationStep
-            request={currentRequest || initialRequest}
+            request={currentRequest || formData}
             accommodation={accommodation}
             selectedAccommodation={selectedAccommodation}
             onToggleAccommodation={toggleAccommodation}
@@ -202,7 +212,7 @@ export default function HolidayPlanningPage() {
       case 4:
         return (
           <TransportationStep
-            request={currentRequest || initialRequest}
+            request={currentRequest || formData}
             journeySegments={journeySegments}
             selectedTransportation={selectedTransportation}
             onToggleTransportation={toggleTransportation}
@@ -262,7 +272,7 @@ export default function HolidayPlanningPage() {
             <div>
               <HolidayPreview
                 itinerary={itinerary}
-                totalBudget={(currentRequest || initialRequest).budget}
+                totalBudget={(currentRequest || formData).budget}
                 actualCost={calculateTotalCost()}
                 onRegeneratePlan={handleRegeneratePlan}
                 onCustomize={handleCustomize}
@@ -270,9 +280,12 @@ export default function HolidayPlanningPage() {
                 selectedActivities={getFilteredData().selectedActivities}
                 selectedAccommodation={getFilteredData().selectedAccommodation}
                 selectedTransportation={getFilteredData().selectedTransportation}
-                request={currentRequest || initialRequest}
+                request={currentRequest || formData}
                 onRequestChange={handleRequestChange}
                 currency={currency}
+                onAIChatMessage={handleAIChatMessage}
+                initialSearchQuery={hasFormData ? (pageLocation.state as any)?.searchData?.query : ''}
+                hasInitialRequest={!!hasFormData}
               />
             </div>
           </div>
@@ -283,11 +296,11 @@ export default function HolidayPlanningPage() {
             <div className="lg:col-span-3 overflow-y-auto">
               <div className="space-y-6">
                 <DestinationStep
-                  request={currentRequest || initialRequest}
+                  request={currentRequest || formData}
                   onRequestChange={handleRequestChange}
                 />
                 <ActivitiesStep
-                  request={currentRequest || initialRequest}
+                  request={currentRequest || formData}
                   activities={activities}
                   selectedActivities={selectedActivities}
                   onToggleActivity={toggleActivity}
@@ -296,7 +309,7 @@ export default function HolidayPlanningPage() {
                   isLoading={isActivitiesLoading}
                 />
                 <AccommodationStep
-                  request={currentRequest || initialRequest}
+                  request={currentRequest || formData}
                   accommodation={accommodation}
                   selectedAccommodation={selectedAccommodation}
                   onToggleAccommodation={toggleAccommodation}
@@ -304,7 +317,7 @@ export default function HolidayPlanningPage() {
                   isLoading={isAccommodationLoading}
                 />
                 <TransportationStep
-                  request={currentRequest || initialRequest}
+                  request={currentRequest || formData}
                   journeySegments={journeySegments}
                   selectedTransportation={selectedTransportation}
                   onToggleTransportation={toggleTransportation}
@@ -319,7 +332,7 @@ export default function HolidayPlanningPage() {
               <div className="sticky top-6">
                 <HolidayPreview
                   itinerary={itinerary}
-                  totalBudget={(currentRequest || initialRequest).budget}
+                  totalBudget={(currentRequest || formData).budget}
                   actualCost={calculateTotalCost()}
                   onRegeneratePlan={handleRegeneratePlan}
                   onCustomize={handleCustomize}
@@ -327,9 +340,12 @@ export default function HolidayPlanningPage() {
                   selectedActivities={getFilteredData().selectedActivities}
                   selectedAccommodation={getFilteredData().selectedAccommodation}
                   selectedTransportation={getFilteredData().selectedTransportation}
-                  request={currentRequest || initialRequest}
+                  request={currentRequest || formData}
                   onRequestChange={handleRequestChange}
                   currency={currency}
+                  onAIChatMessage={handleAIChatMessage}
+                  initialSearchQuery={hasFormData ? (pageLocation.state as any)?.searchData?.query : ''}
+                  hasInitialRequest={!!hasFormData}
                 />
               </div>
             </div>

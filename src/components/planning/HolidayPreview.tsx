@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ItineraryItem, Activity, Transportation, Accommodation, TripPlanningRequest } from '../../types';
+import { jsonDataService } from '../../services/jsonDataService';
 import type { Currency } from '../../types/location';
 
 interface HolidayPreviewProps {
@@ -15,6 +16,9 @@ interface HolidayPreviewProps {
   request?: TripPlanningRequest;
   onRequestChange?: (updates: Partial<TripPlanningRequest>) => void;
   currency?: Currency | null; // Currency from location provider
+  onAIChatMessage?: (message: string) => Promise<{ success: boolean; message: string }>;
+  initialSearchQuery?: string;
+  hasInitialRequest?: boolean;
 }
 
 export default function HolidayPreview({
@@ -27,13 +31,25 @@ export default function HolidayPreview({
   selectedTransportation = [],
   request,
   onRequestChange,
-  currency = null
+  currency = null,
+  onAIChatMessage,
+  initialSearchQuery = '',
+  hasInitialRequest = false
 }: HolidayPreviewProps) {
   const [aiMessage, setAiMessage] = useState<string>('');
   const [lastMessage, setLastMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSettingsExpanded, setIsSettingsExpanded] = useState<boolean>(false);
   const isWithinBudget = actualCost <= totalBudget;
+
+  // Handle initial search query from homepage request
+  useEffect(() => {
+    if (hasInitialRequest && initialSearchQuery) {
+      // Set the search query as the last message to show users what prompt generated their results
+      setLastMessage(initialSearchQuery);
+      console.log('Set last message to initial search query:', initialSearchQuery);
+    }
+  }, [hasInitialRequest, initialSearchQuery]);
 
   // Currency formatting helper
   const formatCurrency = (amount: number) => {
@@ -46,64 +62,38 @@ export default function HolidayPreview({
   const accommodationCost = selectedAccommodation.reduce((sum, acc) => sum + (acc.pricePerNight * acc.totalNights), 0);
   const transportationCost = selectedTransportation.reduce((sum, transport) => sum + transport.price, 0);
 
-  // Get images for cards
+  // Get images for cards - use data from API/JSON, no fallbacks
   const getActivityImage = (activity: Activity) => {
-    const imageMap: { [key: string]: string } = {
-      'Surfing in Canggu': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center',
-      'Temple Tour': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center',
-      'Cooking Class': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&crop=center',
-      'Spa Treatment': 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop&crop=center',
-      'Volcano Hiking': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop&crop=center'
-    };
-    return imageMap[activity.name] || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center';
+    return activity.image || '';
   };
 
   const getAccommodationImage = (accommodation: Accommodation) => {
-    const imageMap: { [key: string]: string } = {
-      'Luxury Resort': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop&crop=center',
-      'Boutique Hotel': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&crop=center',
-      'Villa Rental': 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop&crop=center',
-      'Hostel': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center'
-    };
-    return imageMap[accommodation.name] || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop&crop=center';
+    return accommodation.image || '';
   };
 
   const getTransportImage = (transport: Transportation) => {
-    const imageMap: { [key: string]: string } = {
-      'Direct Flight': 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop&crop=center',
-      'Scooter Rental': 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop&crop=center',
-      'Taxi Service': 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
-      'Car Rental': 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center'
-    };
-    return imageMap[transport.name] || 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop&crop=center';
+    return transport.image || '';
   };
 
-  // Destination helper functions
+  // Destination helper functions - use exact same data as destination step
+  const getDestinationData = (destination: string) => {
+    const destinations = jsonDataService.getDestinationsWithImages();
+    return destinations.find(d => d.name === destination);
+  };
+
   const getDestinationImage = (destination: string) => {
-    const imageMap: { [key: string]: string } = {
-      'Bali, Indonesia': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center',
-      'Tokyo, Japan': 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
-      'Santorini, Greece': 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=400&h=300&fit=crop&crop=center'
-    };
-    return imageMap[destination] || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center';
+    const destinationData = getDestinationData(destination);
+    return destinationData?.image || '';
   };
 
   const getDestinationTitle = (destination: string) => {
-    const titleMap: { [key: string]: string } = {
-      'Bali, Indonesia': 'Bali Tropical Escape',
-      'Tokyo, Japan': 'Tokyo Urban Adventure',
-      'Santorini, Greece': 'Santorini Sunset Romance'
-    };
-    return titleMap[destination] || destination;
+    const destinationData = getDestinationData(destination);
+    return destinationData?.name || destination;
   };
 
   const getDestinationDescription = (destination: string) => {
-    const descriptionMap: { [key: string]: string } = {
-      'Bali, Indonesia': 'Beaches & Islands',
-      'Tokyo, Japan': 'Modern Metropolis',
-      'Santorini, Greece': 'Romantic Sunset'
-    };
-    return descriptionMap[destination] || 'Adventure Awaits';
+    const destinationData = getDestinationData(destination);
+    return destinationData?.description || 'Adventure Awaits';
   };
 
   const handleDateChange = (field: 'startDate' | 'endDate', value: string) => {
@@ -134,12 +124,18 @@ export default function HolidayPreview({
     setIsLoading(true);
     setLastMessage(aiMessage);
     
-    // Simulate AI processing (replace with actual AI API call)
-    setTimeout(() => {
-      console.log('AI Message sent:', aiMessage);
+    try {
+      // Use the hook's AI chat handler
+      if (onAIChatMessage) {
+        const result = await onAIChatMessage(aiMessage);
+        console.log('AI Response:', result);
+      }
       setAiMessage('');
+    } catch (error) {
+      console.error('AI Chat error:', error);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

@@ -23,16 +23,9 @@ export default function AccommodationStep({
 
   const totalNights = request.duration || 7;
 
-  // Mock accommodation images - in real app these would come from the accommodation data
+  // Use image from accommodation data - no fallback
   const getAccommodationImage = (accommodation: Accommodation) => {
-    const imageMap: { [key: string]: string } = {
-      'resort': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop&crop=center',
-      'villa': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&crop=center',
-      'hotel': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop&crop=center',
-      'apartment': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop&crop=center',
-      'hostel': 'https://images.unsplash.com/photo-1555854877-bab0e828d46f?w=400&h=300&fit=crop&crop=center' // 404
-    };
-    return imageMap[accommodation.type] || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop&crop=center';
+    return accommodation.image || '';
   };
 
   return (
@@ -83,7 +76,16 @@ export default function AccommodationStep({
             </div>
           )}
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {accommodation.map((acc) => (
+            {accommodation.length === 0 ? (
+              // Empty state
+              <div className="flex-shrink-0 w-44 h-32 bg-gray-50 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                <div className="text-center text-gray-500">
+                  <p className="text-sm">No accommodation available</p>
+                  <p className="text-xs mt-1">Try the AI chat to get started</p>
+                </div>
+              </div>
+            ) : (
+              accommodation.map((acc) => (
               <AccommodationCard
                 key={acc.id}
                 accommodation={acc}
@@ -93,7 +95,8 @@ export default function AccommodationStep({
                 imageUrl={getAccommodationImage(acc)}
                 totalNights={totalNights}
               />
-            ))}
+            ))
+            )}
           </div>
         </div>
       </div>

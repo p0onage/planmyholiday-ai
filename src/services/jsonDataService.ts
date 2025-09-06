@@ -84,6 +84,48 @@ class JsonDataService {
     return destinationData?.popularThemes || ['general'];
   }
 
+  // Get all destinations with images for selection
+  getDestinationsWithImages() {
+    const destinations = Object.entries(this.tripData.destinations).map(([key, data]) => ({
+      key,
+      name: data.name,
+      image: this.getDestinationImageFromFeaturedTrips(key),
+      description: this.getDestinationDescription(key)
+    }));
+    return destinations;
+  }
+
+  // Get destination image from featured trips data
+  private getDestinationImageFromFeaturedTrips(destinationKey: string): string | undefined {
+    // Map destination keys to featured trip locations
+    const destinationToLocationMap: { [key: string]: string } = {
+      'bali': 'Bali, Indonesia',
+      'tokyo': 'Tokyo, Japan',
+      'santorini': 'Santorini, Greece'
+    };
+    
+    const location = destinationToLocationMap[destinationKey];
+    if (location) {
+      const featuredTrip = this.featuredTrips.find(trip => trip.location === location);
+      if (featuredTrip) {
+        return featuredTrip.image;
+      }
+    }
+    
+    // No fallback - return undefined if no image found
+    return undefined;
+  }
+
+  // Get destination description based on themes
+  private getDestinationDescription(destinationKey: string): string {
+    const descriptions: { [key: string]: string } = {
+      'bali': 'Tropical Paradise',
+      'tokyo': 'Modern Metropolis', 
+      'santorini': 'Romantic Sunset'
+    };
+    return descriptions[destinationKey] || 'Amazing Destination';
+  }
+
   // Get activities for destination
   getDestinationActivities(destination: string) {
     // Handle full destination names like "Bali, Indonesia"
@@ -162,7 +204,6 @@ class JsonDataService {
         price: this.calculateActivityPrice(activityName, request.budget),
         duration: this.getActivityDuration(activityName),
         date: request.startDate,
-        image: `https://picsum.photos/400/300?random=${tripData.id}-${index}`,
         location: tripData.location,
         isSelected: false,
         theme: tripData.types[0]?.toLowerCase() || 'general'
@@ -180,7 +221,6 @@ class JsonDataService {
         price: 45,
         duration: '4 hours',
         date: request.startDate,
-        image: 'https://picsum.photos/400/300?random=beach',
         location: 'Coastal Area',
         isSelected: false,
         theme: 'tropical'
@@ -194,7 +234,6 @@ class JsonDataService {
         price: 25,
         duration: '3 hours',
         date: request.startDate,
-        image: 'https://picsum.photos/400/300?random=culture',
         location: 'City Center',
         isSelected: false,
         theme: 'cultural'
@@ -208,7 +247,6 @@ class JsonDataService {
         price: 65,
         duration: '8 hours',
         date: request.startDate,
-        image: 'https://picsum.photos/400/300?random=adventure',
         location: 'Mountain Area',
         isSelected: false,
         theme: 'adventure'
@@ -267,7 +305,6 @@ class JsonDataService {
           pricePerNight: Math.round(avgPricePerNight * 0.4),
           location: tripData.location,
           distanceToBeach: '2km to beach',
-          image: `https://picsum.photos/400/300?random=${tripData.id}-hotel`,
           isSelected: false,
           theme: tripData.types[0]?.toLowerCase() || 'comfort',
           totalNights: request.duration
@@ -286,7 +323,6 @@ class JsonDataService {
         pricePerNight: 180,
         location: 'Beachfront',
         distanceToBeach: 'Beachfront',
-        image: 'https://picsum.photos/400/300?random=resort',
         isSelected: false,
         theme: 'luxury',
         totalNights: request.duration
@@ -300,7 +336,6 @@ class JsonDataService {
         pricePerNight: 120,
         location: 'City Center',
         distanceToBeach: '5km to beach',
-        image: 'https://picsum.photos/400/300?random=boutique',
         isSelected: false,
         theme: 'boutique',
         totalNights: request.duration
@@ -323,6 +358,7 @@ class JsonDataService {
         price: this.adjustPriceForBudget(transport.price, request.budget),
         from: transport.from,
         to: transport.to,
+        image: transport.image,
         isSelected: false,
         details: transport.details
       }));
@@ -410,7 +446,6 @@ class JsonDataService {
         title: 'Outbound Journey',
         route: `${request.departureCity} → ${request.destination}`,
         description: 'International travel to your destination',
-        image: 'https://picsum.photos/400/300?random=outbound-flight',
         transportTypes: ['flight', 'boat', 'train', 'drive', 'bus']
       },
       {
@@ -418,7 +453,6 @@ class JsonDataService {
         title: 'Local Transport',
         route: `Within ${request.destination}`,
         description: 'Getting around during your stay',
-        image: 'https://picsum.photos/400/300?random=local-transport',
         transportTypes: ['local_transport', 'rental']
       },
       {
@@ -426,7 +460,6 @@ class JsonDataService {
         title: 'Inter-city Travel',
         route: 'Various locations',
         description: 'Travel between different areas',
-        image: 'https://picsum.photos/400/300?random=intercity-travel',
         transportTypes: ['local_transport', 'rental', 'bus']
       },
       {
@@ -434,7 +467,6 @@ class JsonDataService {
         title: 'Return Journey',
         route: `${request.destination} → ${request.departureCity}`,
         description: 'International travel back home',
-        image: 'https://picsum.photos/400/300?random=return-flight',
         transportTypes: ['flight', 'boat', 'train', 'drive', 'bus']
       }
     ];
@@ -477,7 +509,6 @@ class JsonDataService {
           type: 'flight',
           price: 450,
           duration: '12h 30m',
-          image: 'https://picsum.photos/400/300?random=default-flight',
           description: `Direct flight from ${request.departureCity} to ${request.destination}`,
           details: {
             airline: 'Major Airline',
@@ -493,7 +524,6 @@ class JsonDataService {
           type: 'local_transport',
           price: 25,
           duration: 'Daily',
-          image: 'https://picsum.photos/400/300?random=default-local',
           description: 'Local transportation options',
           details: {
             company: 'Local Service'
@@ -507,7 +537,6 @@ class JsonDataService {
           type: 'local_transport',
           price: 35,
           duration: '2-3 hours',
-          image: 'https://picsum.photos/400/300?random=default-intercity',
           description: 'Transport between different areas',
           details: {
             company: 'Local Service'
@@ -521,7 +550,6 @@ class JsonDataService {
           type: 'flight',
           price: 450,
           duration: '12h 30m',
-          image: 'https://picsum.photos/400/300?random=default-return',
           description: `Return flight from ${request.destination} to ${request.departureCity}`,
           details: {
             airline: 'Major Airline',

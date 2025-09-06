@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { TripPlanningRequest } from '../../types';
+import { jsonDataService } from '../../services/jsonDataService';
 
 interface DestinationStepProps {
   request: TripPlanningRequest;
@@ -10,33 +11,21 @@ export default function DestinationStep({ request, onRequestChange }: Destinatio
   const [availableDestinations, setAvailableDestinations] = useState<Array<{
     name: string;
     key: string;
-    image: string;
+    image: string | undefined;
     description: string;
   }>>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load available destinations from JSON data
+  // Load available destinations from JSON data service
   useEffect(() => {
-    const destinations = [
-      {
-        name: 'Bali, Indonesia',
-        key: 'bali',
-        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center',
-        description: 'Tropical Paradise'
-      },
-      {
-        name: 'Tokyo, Japan',
-        key: 'tokyo',
-        image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
-        description: 'Modern Metropolis'
-      },
-      {
-        name: 'Santorini, Greece',
-        key: 'santorini',
-        image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=400&h=300&fit=crop&crop=center',
-        description: 'Romantic Sunset'
-      }
-    ];
-    setAvailableDestinations(destinations);
+    try {
+      const destinations = jsonDataService.getDestinationsWithImages();
+      setAvailableDestinations(destinations);
+    } catch (error) {
+      console.error('Failed to load destinations:', error);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const handleDestinationChange = (destinationKey: string) => {
@@ -60,7 +49,26 @@ export default function DestinationStep({ request, onRequestChange }: Destinatio
         <div className="space-y-3">
           <label className="text-sm font-medium text-gray-700">Choose Your Holiday Destination</label>
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {availableDestinations.map((destination) => {
+            {isLoading ? (
+              // Loading state
+              <div className="flex-shrink-0 w-44 h-32 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="flex items-center gap-2 text-gray-500">
+                  <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span className="text-sm">Loading...</span>
+                </div>
+              </div>
+            ) : availableDestinations.length === 0 ? (
+              // Empty state
+              <div className="flex-shrink-0 w-44 h-32 bg-gray-50 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                <div className="text-center text-gray-500">
+                  <p className="text-sm">No destinations available</p>
+                  <p className="text-xs mt-1">Try the AI chat to get started</p>
+                </div>
+              </div>
+            ) : (
+              availableDestinations.map((destination) => {
               const isSelected = request.destination === destination.name;
               return (
                 <div
@@ -77,7 +85,7 @@ export default function DestinationStep({ request, onRequestChange }: Destinatio
                     {/* Background Image */}
                     <div 
                       className="absolute inset-0 bg-cover bg-center"
-                      style={{ backgroundImage: `url(${destination.image})` }}
+                      style={{ backgroundImage: destination.image ? `url(${destination.image})` : 'none' }}
                     />
                     
                     {/* Selection Button Overlay */}
@@ -108,7 +116,8 @@ export default function DestinationStep({ request, onRequestChange }: Destinatio
                   </div>
                 </div>
               );
-            })}
+            })
+            )}
           </div>
         </div>
 

@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tripPlannerService } from '../services/tripPlannerService';
+import { jsonDataService } from '../services/jsonDataService';
 import type { 
   TripPlanningRequest
 } from '../services/tripPlannerService';
@@ -486,6 +487,7 @@ export function useRealTimeTripPlanner(options: UseRealTimeTripPlannerOptions) {
       price: option.price,
       from: option.details?.company || 'Unknown',
       to: option.details?.company || 'Unknown',
+      image: option.image,
       isSelected: true,
       details: {
         airline: option.details?.airline,
@@ -500,6 +502,72 @@ export function useRealTimeTripPlanner(options: UseRealTimeTripPlannerOptions) {
       selectedTransportation
     };
   }, [activitiesQuery.data, accommodationQuery.data, allTransportOptionsQuery.data, state.selectedActivities, state.selectedAccommodation, state.selectedTransportation]);
+
+  // Load destinations for AI chat interaction
+  const loadDestinations = useCallback(() => {
+    try {
+      const destinations = jsonDataService.getDestinationsWithImages();
+      if (destinations.length > 0 && !state.currentRequest.destination) {
+        // Auto-select first destination if none is selected
+        updateRequest({ destination: destinations[0].name });
+      }
+      return destinations;
+    } catch (error) {
+      console.error('Failed to load destinations:', error);
+      return [];
+    }
+  }, [state.currentRequest.destination, updateRequest]);
+
+  // Load all data for initial request (from homepage)
+  const loadAllDataForRequest = useCallback(async () => {
+    try {
+      // Load destinations and select first one
+      loadDestinations();
+      
+      // Invalidate all queries to trigger data loading
+      queryClient.invalidateQueries({ queryKey: ['trip-plan'] });
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      queryClient.invalidateQueries({ queryKey: ['accommodation'] });
+      queryClient.invalidateQueries({ queryKey: ['transportation'] });
+      queryClient.invalidateQueries({ queryKey: ['journey-segments'] });
+      queryClient.invalidateQueries({ queryKey: ['all-transport-options'] });
+      
+      return { success: true, message: 'Loading all data for your request...' };
+    } catch (error) {
+      console.error('Failed to load all data:', error);
+      return { success: false, message: 'Failed to load data' };
+    }
+  }, [loadDestinations, queryClient]);
+
+  // Handle AI chat message and trigger data loading
+  const handleAIChatMessage = useCallback(async (message: string): Promise<{ success: boolean; message: string }> => {
+    if (!message.trim()) {
+      return { success: false, message: 'Please enter a message' };
+    }
+    
+    try {
+      // Load destinations if not already loaded
+      const destinations = loadDestinations();
+      
+      // If no destination is selected, select the first one
+      if (!state.currentRequest.destination && destinations.length > 0) {
+        updateRequest({ destination: destinations[0].name });
+      }
+      
+      // Invalidate queries to trigger data refresh
+      queryClient.invalidateQueries({ queryKey: ['trip-plan'] });
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      queryClient.invalidateQueries({ queryKey: ['accommodation'] });
+      queryClient.invalidateQueries({ queryKey: ['transportation'] });
+      queryClient.invalidateQueries({ queryKey: ['journey-segments'] });
+      queryClient.invalidateQueries({ queryKey: ['all-transport-options'] });
+      
+      return { success: true, message: 'AI processing your request...' };
+    } catch (error) {
+      console.error('Failed to process AI message:', error);
+      return { success: false, message: 'Failed to process your request' };
+    }
+  }, [loadDestinations, state.currentRequest.destination, updateRequest, queryClient]);
 
   return {
     // State
@@ -544,6 +612,11 @@ export function useRealTimeTripPlanner(options: UseRealTimeTripPlannerOptions) {
     // Computed values
     calculateTotalCost,
     getFilteredData,
+    
+    // AI Chat functions
+    loadDestinations,
+    loadAllDataForRequest,
+    handleAIChatMessage,
     
     // Query invalidation
     invalidateQueries: () => {

@@ -22,16 +22,9 @@ export default function ActivitiesStep({
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
 
 
-  // Mock activity images - in real app these would come from the activity data
+  // Use image from activity data - no fallback
   const getActivityImage = (activity: Activity) => {
-    const imageMap: { [key: string]: string } = {
-      'beach': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop&crop=center',
-      'culture': 'https://images.unsplash.com/photo-1539650116574-75c0c6d73c6e?w=400&h=300&fit=crop&crop=center',
-      'adventure': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop&crop=center',
-      'food': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop&crop=center',
-      'relaxation': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center'
-    };
-    return imageMap[activity.type] || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center';
+    return activity.image || '';
   };
 
   return (
@@ -83,7 +76,16 @@ export default function ActivitiesStep({
             </div>
           )}
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {activities.map((activity) => (
+            {activities.length === 0 ? (
+              // Empty state
+              <div className="flex-shrink-0 w-44 h-32 bg-gray-50 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                <div className="text-center text-gray-500">
+                  <p className="text-sm">No activities available</p>
+                  <p className="text-xs mt-1">Try the AI chat to get started</p>
+                </div>
+              </div>
+            ) : (
+              activities.map((activity) => (
               <ActivityCard
                 key={activity.id}
                 activity={activity}
@@ -92,7 +94,8 @@ export default function ActivitiesStep({
                 onInfoClick={() => setSelectedActivity(activity)}
                 imageUrl={getActivityImage(activity)}
               />
-            ))}
+            ))
+            )}
           </div>
         </div>
 

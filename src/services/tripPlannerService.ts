@@ -29,7 +29,7 @@ export interface Activity {
   price: number;
   duration: string;
   date: string;
-  image: string;
+  image?: string;
   location: string;
   isSelected: boolean;
   theme: string;
@@ -44,7 +44,7 @@ export interface Accommodation {
   pricePerNight: number;
   location: string;
   distanceToBeach: string;
-  image: string;
+  image?: string;
   isSelected: boolean;
   theme: string;
   totalNights: number;
@@ -59,6 +59,7 @@ export interface Transportation {
   price: number;
   from: string;
   to: string;
+  image?: string;
   isSelected: boolean;
   details?: {
     airline?: string;
@@ -72,7 +73,7 @@ export interface JourneySegment {
   title: string;
   route: string;
   description: string;
-  image: string;
+  image?: string;
   transportTypes: string[];
 }
 
@@ -82,7 +83,7 @@ export interface TransportOption {
   type: string;
   price: number;
   duration: string;
-  image: string;
+  image?: string;
   description: string;
   details?: {
     airline?: string;
