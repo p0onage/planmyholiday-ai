@@ -4,7 +4,23 @@ import TripPlannerForm from "../ui/TripPlannerForm";
 import FormLayout, {type FormLayoutConfig } from "../ui/FormLayout";
 import { type TripPlannerFormValues } from "../../types";
 import { useFormContext } from "react-hook-form";
-import { useLocationService } from "../../hooks/useLocationService";
+import { useLocation } from "../../providers/LocationProvider";
+
+// Search input component that can access form context
+function SearchInput() {
+    const { register } = useFormContext<TripPlannerFormValues>();
+
+    return (
+        <div className="flex-1 px-6 py-4">
+            <input
+                type="text"
+                placeholder="Plan your holiday..."
+                className="w-full bg-transparent text-lg placeholder-gray-500 focus:outline-none"
+                {...register("query")}
+            />
+        </div>
+    );
+}
 
 // Modal controls component that can access form context
 function ModalControls({ onClose }: { onClose: () => void }) {
@@ -55,7 +71,7 @@ export default function SearchBar() {
     const navigate = useNavigate();
     
     // Get user location for default departure city
-    const { location } = useLocationService();
+    const { location } = useLocation();
 
     const defaultValues: TripPlannerFormValues = {
         query: "",
@@ -81,31 +97,11 @@ export default function SearchBar() {
     };
 
     const onSubmit = (data: TripPlannerFormValues) => {
-        console.log("Form submitted:", data);
         
-        // Build trip planning request object
-        const tripRequest = {
-            destination: data.query || 'Bali',
-            departureCity: data.departureCity || '',
-            startDate: data.when === 'exact' ? data.exactDates.start : new Date().toISOString().split('T')[0],
-            endDate: data.when === 'exact' ? data.exactDates.end : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            duration: data.durationValue,
-            adults: data.adults,
-            children: data.kids,
-            budget: data.budget,
-            preferences: {
-                themes: ['tropical', 'adventure'],
-                activityTypes: ['beach', 'culture'],
-                accommodationTypes: ['resort', 'villa'],
-                transportationPreferences: ['flight', 'local']
-            }
-        };
-        
-        // Navigate to planning page with data in state
+        // Navigate to planning page with search data
         navigate('/plan', { 
             state: { 
-                tripRequest,
-                searchData: data // Keep original form data for reference
+                searchData: data
             } 
         });
         
@@ -120,14 +116,7 @@ export default function SearchBar() {
                 <TripPlannerForm defaultValues={defaultValues} onSubmit={onSubmit}>
                     <div className="flex items-center bg-gray-100 rounded-full overflow-hidden w-4/6 mx-auto">
                         {/* Search Input */}
-                        <div className="flex-1 px-6 py-4">
-                            <input
-                                type="text"
-                                placeholder="Plan your holiday..."
-                                className="w-full bg-transparent text-lg placeholder-gray-500 focus:outline-none"
-                                name="query"
-                            />
-                        </div>
+                        <SearchInput />
                         
                         {/* Separator */}
                         <div className="w-px h-8 bg-gray-300"></div>

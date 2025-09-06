@@ -47,7 +47,6 @@ export default function HolidayPreview({
     if (hasInitialRequest && initialSearchQuery) {
       // Set the search query as the last message to show users what prompt generated their results
       setLastMessage(initialSearchQuery);
-      console.log('Set last message to initial search query:', initialSearchQuery);
     }
   }, [hasInitialRequest, initialSearchQuery]);
 

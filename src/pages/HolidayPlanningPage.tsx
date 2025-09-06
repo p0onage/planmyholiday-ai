@@ -63,10 +63,6 @@ export default function HolidayPlanningPage() {
     toggleActivity,
     toggleAccommodation,
     toggleTransportation,
-    updateCustomInput,
-    searchActivities,
-    searchAccommodation,
-    searchTransportation,
     calculateTotalCost,
     getFilteredData,
     loadAllDataForRequest,
@@ -100,29 +96,6 @@ export default function HolidayPlanningPage() {
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
   const goToStep = (step: number) => setCurrentStep(Math.max(1, Math.min(4, step)));
 
-  // Custom input handlers with search functionality
-  const handleCustomInputChange = (section: 'activities' | 'accommodation' | 'transportation', input: string) => {
-    updateCustomInput(section, input);
-    console.log(`Custom input for ${section}:`, input);
-    
-    // Example of using search functions
-    if (input.trim()) {
-      switch (section) {
-        case 'activities':
-          const searchResults = searchActivities(input);
-          console.log('Search results for activities:', searchResults);
-          break;
-        case 'accommodation':
-          const accResults = searchAccommodation(input);
-          console.log('Search results for accommodation:', accResults);
-          break;
-        case 'transportation':
-          const transportResults = searchTransportation(input);
-          console.log('Search results for transportation:', transportResults);
-          break;
-      }
-    }
-  };
 
   // Get data from the hook
   const itinerary = tripPlan?.itinerary || [];
@@ -193,7 +166,6 @@ export default function HolidayPlanningPage() {
             activities={activities}
             selectedActivities={selectedActivities}
             onToggleActivity={toggleActivity}
-            onCustomInputChange={(input) => handleCustomInputChange('activities', input)}
             onRefreshAI={() => console.log('Refresh AI for activities')}
             isLoading={isActivitiesLoading}
           />
@@ -304,7 +276,6 @@ export default function HolidayPlanningPage() {
                   activities={activities}
                   selectedActivities={selectedActivities}
                   onToggleActivity={toggleActivity}
-                  onCustomInputChange={(input) => handleCustomInputChange('activities', input)}
                   onRefreshAI={() => console.log('Refresh AI for activities')}
                   isLoading={isActivitiesLoading}
                 />

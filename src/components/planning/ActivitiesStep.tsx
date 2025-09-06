@@ -6,7 +6,6 @@ interface ActivitiesStepProps {
   activities: Activity[];
   selectedActivities: string[];
   onToggleActivity: (activityId: string) => void;
-  onCustomInputChange: (input: string) => void;
   onRefreshAI: () => void;
   isLoading: boolean;
 }
