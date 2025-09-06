@@ -58,6 +58,7 @@ export default function HolidayPlanningPage() {
     tripPlan,
     activities,
     accommodation,
+    journeySegments,
     isLoading,
     isActivitiesLoading,
     isAccommodationLoading,
@@ -202,6 +203,7 @@ export default function HolidayPlanningPage() {
         return (
           <TransportationStep
             request={currentRequest || initialRequest}
+            journeySegments={journeySegments}
             selectedTransportation={selectedTransportation}
             onToggleTransportation={toggleTransportation}
             onRefreshAI={() => console.log('Refresh AI for transportation')}
@@ -303,6 +305,7 @@ export default function HolidayPlanningPage() {
                 />
                 <TransportationStep
                   request={currentRequest || initialRequest}
+                  journeySegments={journeySegments}
                   selectedTransportation={selectedTransportation}
                   onToggleTransportation={toggleTransportation}
                   onRefreshAI={() => console.log('Refresh AI for transportation')}

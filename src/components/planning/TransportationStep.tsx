@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import type { TripPlanningRequest } from '../../types';
-import { useJourneySegments, useTransportOptions } from '../../hooks';
+import { useTransportOptions } from '../../hooks';
 import type { JourneySegment, TransportOption } from '../../services/tripPlannerService';
 
 interface TransportationStepProps {
   request: TripPlanningRequest;
+  journeySegments: JourneySegment[];
   selectedTransportation: string[];
   onToggleTransportation: (transportationId: string) => void;
   onRefreshAI: () => void;
@@ -14,20 +15,14 @@ interface TransportationStepProps {
 
 export default function TransportationStep({
   request,
+  journeySegments,
   selectedTransportation,
-    onToggleTransportation,
+  onToggleTransportation,
   onRefreshAI,
   isLoading
 }: TransportationStepProps) {
   const [sortBy, setSortBy] = useState<'price' | 'duration' | 'convenience'>('price');
   const [selectedTransportItem, setSelectedTransportItem] = useState<TransportOption | null>(null);
-
-  const { 
-    journeySegments, 
-    isLoading: segmentsLoading, 
-    isError: segmentsError, 
-    refetch: refetchSegments 
-  } = useJourneySegments(request);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -59,23 +54,20 @@ export default function TransportationStep({
           </div>
           
           <button
-            onClick={() => {
-              onRefreshAI();
-              refetchSegments();
-            }}
-            disabled={isLoading || segmentsLoading}
+            onClick={onRefreshAI}
+            disabled={isLoading}
             className="flex items-center gap-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm hover:bg-purple-200 disabled:opacity-50"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            {(isLoading || segmentsLoading) ? 'Loading...' : 'Refresh AI'}
+            {isLoading ? 'Loading...' : 'Refresh AI'}
           </button>
         </div>
 
         {/* Journey Segments */}
         <div className="space-y-8">
-          {segmentsLoading ? (
+          {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="flex items-center gap-2 text-blue-600">
                 <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,21 +76,15 @@ export default function TransportationStep({
                 <span className="text-sm font-medium">Loading journey segments...</span>
               </div>
             </div>
-          ) : segmentsError ? (
+          ) : journeySegments.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="text-red-600 mb-4">
+              <div className="text-gray-600 mb-4">
                 <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.632A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                 </svg>
-                <p className="text-sm font-medium">Failed to load journey segments</p>
-                <p className="text-xs text-gray-500 mt-1">Please try clicking the refresh button</p>
+                <p className="text-sm font-medium">No journey segments available</p>
+                <p className="text-xs text-gray-500 mt-1">Please try refreshing or check your destination</p>
               </div>
-              <button
-                onClick={() => refetchSegments()}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
-              >
-                Try Again
-              </button>
             </div>
           ) : (
             journeySegments.map((segment) => (

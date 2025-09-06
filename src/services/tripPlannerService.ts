@@ -272,6 +272,22 @@ class TripPlannerService {
     return jsonDataService.getTransportOptionsForSegment(request, segmentId);
   }
 
+  // Get all transport options for all journey segments
+  async getAllTransportOptions(request: TripPlanningRequest): Promise<TransportOption[]> {
+    // Get journey segments first
+    const journeySegments = await this.getJourneySegments(request);
+    
+    // Get transport options for each segment
+    const allTransportOptions = await Promise.all(
+      journeySegments.map(segment => 
+        this.getTransportOptionsForSegment(request, segment.id)
+      )
+    );
+    
+    // Flatten the array
+    return allTransportOptions.flat();
+  }
+
   // Generate complete trip plan
   async generateTripPlan(request: TripPlanningRequest): Promise<TripPlan> {
     // Simulate API delay for realistic experience

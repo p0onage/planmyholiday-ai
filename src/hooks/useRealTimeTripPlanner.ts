@@ -122,6 +122,24 @@ export function useRealTimeTripPlanner(options: UseRealTimeTripPlannerOptions) {
     gcTime: 0,
   });
 
+  // Journey segments query
+  const journeySegmentsQuery = useQuery({
+    queryKey: ['journey-segments', state.currentRequest.destination, state.currentRequest.departureCity],
+    queryFn: () => tripPlannerService.getJourneySegments(state.currentRequest),
+    enabled: true,
+    staleTime: 0,
+    gcTime: 0,
+  });
+
+  // All transport options query (flattened from journey segments)
+  const allTransportOptionsQuery = useQuery({
+    queryKey: ['all-transport-options', state.currentRequest.destination, state.currentRequest.departureCity],
+    queryFn: () => tripPlannerService.getAllTransportOptions(state.currentRequest),
+    enabled: true,
+    staleTime: 0,
+    gcTime: 0,
+  });
+
   // Update trip plan mutation
   const updateTripPlanMutation = useMutation({
     mutationFn: ({ planId, updates }: {
@@ -434,7 +452,7 @@ export function useRealTimeTripPlanner(options: UseRealTimeTripPlannerOptions) {
   const calculateTotalCost = useCallback(() => {
     const activities = activitiesQuery.data || [];
     const accommodation = accommodationQuery.data || [];
-    const transportation = transportationQuery.data || [];
+    const allTransportOptions = allTransportOptionsQuery.data || [];
 
     const activityCost = activities
       .filter(activity => state.selectedActivities.includes(activity.id))
@@ -444,25 +462,44 @@ export function useRealTimeTripPlanner(options: UseRealTimeTripPlannerOptions) {
       .filter(acc => state.selectedAccommodation.includes(acc.id))
       .reduce((sum, acc) => sum + (acc.pricePerNight * acc.totalNights), 0);
 
-    const transportCost = transportation
+    const transportCost = allTransportOptions
       .filter(transport => state.selectedTransportation.includes(transport.id))
       .reduce((sum, transport) => sum + transport.price, 0);
 
     return activityCost + accommodationCost + transportCost;
-  }, [activitiesQuery.data, accommodationQuery.data, transportationQuery.data, state.selectedActivities, state.selectedAccommodation, state.selectedTransportation]);
+  }, [activitiesQuery.data, accommodationQuery.data, allTransportOptionsQuery.data, state.selectedActivities, state.selectedAccommodation, state.selectedTransportation]);
 
   // Get filtered data based on selections
   const getFilteredData = useCallback(() => {
     const activities = activitiesQuery.data || [];
     const accommodation = accommodationQuery.data || [];
-    const transportation = transportationQuery.data || [];
+    const allTransportOptions = allTransportOptionsQuery.data || [];
+
+    // Convert TransportOption[] to Transportation[] format for HolidayPreview
+    const selectedTransportOptions = allTransportOptions.filter(transport => state.selectedTransportation.includes(transport.id));
+    const selectedTransportation = selectedTransportOptions.map(option => ({
+      id: option.id,
+      type: (option.type === 'flight' || option.type === 'local_transport') ? option.type : 'local_transport' as 'flight' | 'local_transport',
+      name: option.name,
+      description: option.description,
+      duration: option.duration,
+      price: option.price,
+      from: option.details?.company || 'Unknown',
+      to: option.details?.company || 'Unknown',
+      isSelected: true,
+      details: {
+        airline: option.details?.airline,
+        stops: option.details?.stops,
+        class: option.details?.class
+      }
+    }));
 
     return {
       selectedActivities: activities.filter(activity => state.selectedActivities.includes(activity.id)),
       selectedAccommodation: accommodation.filter(acc => state.selectedAccommodation.includes(acc.id)),
-      selectedTransportation: transportation.filter(transport => state.selectedTransportation.includes(transport.id))
+      selectedTransportation
     };
-  }, [activitiesQuery.data, accommodationQuery.data, transportationQuery.data, state.selectedActivities, state.selectedAccommodation, state.selectedTransportation]);
+  }, [activitiesQuery.data, accommodationQuery.data, allTransportOptionsQuery.data, state.selectedActivities, state.selectedAccommodation, state.selectedTransportation]);
 
   return {
     // State
@@ -473,15 +510,17 @@ export function useRealTimeTripPlanner(options: UseRealTimeTripPlannerOptions) {
     activities: activitiesQuery.data || [],
     accommodation: accommodationQuery.data || [],
     transportation: transportationQuery.data || [],
+    journeySegments: journeySegmentsQuery.data || [],
     
     // Loading states
     isLoading: tripPlanQuery.isLoading,
     isActivitiesLoading: activitiesQuery.isLoading || state.refreshingSteps.activities,
     isAccommodationLoading: accommodationQuery.isLoading || state.refreshingSteps.accommodation,
     isTransportationLoading: transportationQuery.isLoading || state.refreshingSteps.transportation,
+    isJourneySegmentsLoading: journeySegmentsQuery.isLoading || state.refreshingSteps.transportation,
     
     // Error states
-    error: tripPlanQuery.error || activitiesQuery.error || accommodationQuery.error || transportationQuery.error,
+    error: tripPlanQuery.error || activitiesQuery.error || accommodationQuery.error || transportationQuery.error || journeySegmentsQuery.error || allTransportOptionsQuery.error,
     
     // Mutations
     updateTripPlan: updateTripPlanMutation.mutate,
@@ -512,6 +551,8 @@ export function useRealTimeTripPlanner(options: UseRealTimeTripPlannerOptions) {
       queryClient.invalidateQueries({ queryKey: ['activities'] });
       queryClient.invalidateQueries({ queryKey: ['accommodation'] });
       queryClient.invalidateQueries({ queryKey: ['transportation'] });
+      queryClient.invalidateQueries({ queryKey: ['journey-segments'] });
+      queryClient.invalidateQueries({ queryKey: ['all-transport-options'] });
     }
   };
 }
