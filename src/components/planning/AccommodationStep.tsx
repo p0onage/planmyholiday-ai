@@ -16,18 +16,11 @@ export default function AccommodationStep({
   accommodation,
   selectedAccommodation,
   onToggleAccommodation,
-  onCustomInputChange,
   onRefreshAI,
   isLoading
 }: AccommodationStepProps) {
-  const [customInput, setCustomInput] = useState('');
   const [sortBy, setSortBy] = useState<'price' | 'rating' | 'location' | 'theme_match'>('price');
   const [selectedAccommodationItem, setSelectedAccommodationItem] = useState<Accommodation | null>(null);
-
-  const handleCustomInputSubmit = () => {
-    onCustomInputChange(customInput);
-    setCustomInput('');
-  };
 
   const totalNights = request.duration || 7;
 
@@ -50,29 +43,6 @@ export default function AccommodationStep({
       </div>
 
       <div className="space-y-6">
-        {/* Customize Accommodation Input */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm font-medium text-gray-700">Customize Accommodation Input</span>
-          </div>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Preferred hotel types, amenities, location preferences..."
-              value={customInput}
-              onChange={(e) => setCustomInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleCustomInputSubmit()}
-              className="w-full px-3 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <button
-              onClick={handleCustomInputSubmit}
-              disabled={!customInput.trim()}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Send
-            </button>
-          </div>
-        </div>
 
         {/* Sort and Filter Controls */}
         <div className="flex flex-wrap items-center gap-4">
@@ -156,9 +126,9 @@ function AccommodationCard({ accommodation, isSelected, onToggle, onInfoClick, i
   const totalCost = accommodation.pricePerNight * totalNights;
 
   return (
-    <div className="flex-shrink-0 w-64 bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+    <div className="flex-shrink-0 w-44 bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
       {/* Image Container */}
-      <div className="relative h-40">
+      <div className="relative h-28">
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center"

@@ -5,7 +5,6 @@ interface TransportationStepProps {
   request: TripPlanningRequest;
   selectedTransportation: string[];
   onToggleTransportation: (transportationId: string) => void;
-  onCustomInputChange: (input: string) => void;
   onRefreshAI: () => void;
   isLoading: boolean;
 }
@@ -31,18 +30,11 @@ export default function TransportationStep({
   request,
   selectedTransportation,
   onToggleTransportation,
-  onCustomInputChange,
   onRefreshAI,
   isLoading
 }: TransportationStepProps) {
-  const [customInput, setCustomInput] = useState('');
   const [sortBy, setSortBy] = useState<'price' | 'duration' | 'convenience'>('price');
   const [selectedTransportItem, setSelectedTransportItem] = useState<TransportOption | null>(null);
-
-  const handleCustomInputSubmit = () => {
-    onCustomInputChange(customInput);
-    setCustomInput('');
-  };
 
   // Get complete journey segments
   const getJourneySegments = () => {
@@ -89,29 +81,6 @@ export default function TransportationStep({
       </div>
 
       <div className="space-y-6">
-        {/* Customize Transportation Input */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm font-medium text-gray-700">Customize Transportation Input</span>
-          </div>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Preferred airlines, seat class, layover preferences..."
-              value={customInput}
-              onChange={(e) => setCustomInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleCustomInputSubmit()}
-              className="w-full px-3 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <button
-              onClick={handleCustomInputSubmit}
-              disabled={!customInput.trim()}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Send
-            </button>
-          </div>
-        </div>
 
         {/* Journey Overview */}
         <div className="bg-blue-50 rounded-lg p-4">
@@ -380,8 +349,8 @@ interface TransportCardProps {
 
 function TransportCard({ transport, isSelected, onToggle, onInfoClick }: TransportCardProps) {
   return (
-    <div className="flex-shrink-0 w-64 bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-      <div className="relative h-40">
+    <div className="flex-shrink-0 w-44 bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+      <div className="relative h-28">
         <div 
           className="absolute inset-0 bg-cover bg-center" 
           style={{ backgroundImage: `url(${transport.image})` }}

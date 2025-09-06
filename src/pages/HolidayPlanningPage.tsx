@@ -1,23 +1,25 @@
 ﻿import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation as useRouterLocation } from 'react-router-dom';
+import { useLocation } from '../providers/LocationProvider';
 import { useRealTimeTripPlanner } from '../hooks/useRealTimeTripPlanner';
 import DestinationStep from '../components/planning/DestinationStep';
 import ActivitiesStep from '../components/planning/ActivitiesStep';
 import AccommodationStep from '../components/planning/AccommodationStep';
 import TransportationStep from '../components/planning/TransportationStep';
-import ItineraryPreview from '../components/planning/ItineraryPreview';
+import HolidayPreview from '../components/planning/HolidayPreview';
 import LoadingSpinner from '../components/planning/LoadingSpinner';
 import type { TripPlanningRequest } from '../types';
 
 export default function HolidayPlanningPage() {
-  const location = useLocation();
+  const pageLocation = useRouterLocation();
+  const { currency } = useLocation();
   const [isMobile, setIsMobile] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
   // Get form data from navigation state (passed from homepage search)
   const getInitialRequest = (): TripPlanningRequest => {
     // Check if data was passed via navigation state
-    const stateData = location.state as { tripRequest?: TripPlanningRequest; searchData?: any } | null;
+    const stateData = pageLocation.state as { tripRequest?: TripPlanningRequest; searchData?: any } | null;
     
     if (stateData?.tripRequest) {
       return stateData.tripRequest;
@@ -111,17 +113,6 @@ export default function HolidayPlanningPage() {
     }
   };
 
-  // Example filter functions (available for use in components)
-  // const handlePriceFilter = (section: 'activities' | 'accommodation' | 'transportation', minPrice: number, maxPrice: number) => {
-  //   const filteredResults = filterByPriceRange(section, minPrice, maxPrice);
-  //   console.log(`Filtered ${section} by price range ${minPrice}-${maxPrice}:`, filteredResults);
-  // };
-
-  // const handleRatingFilter = (section: 'activities' | 'accommodation', minRating: number) => {
-  //   const filteredResults = filterByRating(section, minRating);
-  //   console.log(`Filtered ${section} by rating ${minRating}+:`, filteredResults);
-  // };
-
   // Get data from the hook
   const itinerary = tripPlan?.itinerary || [];
 
@@ -214,7 +205,6 @@ export default function HolidayPlanningPage() {
             request={currentRequest || initialRequest}
             selectedTransportation={selectedTransportation}
             onToggleTransportation={toggleTransportation}
-            onCustomInputChange={(input) => handleCustomInputChange('transportation', input)}
             onRefreshAI={() => console.log('Refresh AI for transportation')}
             isLoading={isTransportationLoading}
           />
@@ -225,7 +215,7 @@ export default function HolidayPlanningPage() {
   };
 
   return (
-    <div className="py-6">
+    <div className="py-6 lg:py-8">
         {isMobile ? (
           // Mobile Layout - Step by step navigation
           <div className="space-y-6">
@@ -234,30 +224,15 @@ export default function HolidayPlanningPage() {
               {renderStep()}
             </div>
 
-            {/* Itinerary Preview - Mobile Bottom */}
-            <div>
-              <ItineraryPreview
-                itinerary={itinerary}
-                totalBudget={(currentRequest || initialRequest).budget}
-                actualCost={calculateTotalCost()}
-                onRegeneratePlan={handleRegeneratePlan}
-                onCustomize={handleCustomize}
-                onBookNow={handleBookNow}
-                selectedActivities={getFilteredData().selectedActivities}
-                selectedAccommodation={getFilteredData().selectedAccommodation}
-                selectedTransportation={getFilteredData().selectedTransportation}
-              />
-            </div>
-
             {/* Mobile Navigation */}
             <div className="flex items-center justify-between mt-8">
               <button
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 <span>◄</span>
-                Back
+                Previous
               </button>
               
               <div className="flex items-center gap-2">
@@ -275,18 +250,36 @@ export default function HolidayPlanningPage() {
               <button
                 onClick={nextStep}
                 disabled={currentStep === 4}
-                className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
-                Continue
+                Next
                 <span>►</span>
               </button>
+            </div>
+
+            {/* Holiday Preview - Mobile Bottom */}
+            <div>
+              <HolidayPreview
+                itinerary={itinerary}
+                totalBudget={(currentRequest || initialRequest).budget}
+                actualCost={calculateTotalCost()}
+                onRegeneratePlan={handleRegeneratePlan}
+                onCustomize={handleCustomize}
+                onBookNow={handleBookNow}
+                selectedActivities={getFilteredData().selectedActivities}
+                selectedAccommodation={getFilteredData().selectedAccommodation}
+                selectedTransportation={getFilteredData().selectedTransportation}
+                request={currentRequest || initialRequest}
+                onRequestChange={handleRequestChange}
+                currency={currency}
+              />
             </div>
           </div>
         ) : (
           // Desktop Layout - Side by side with scrollable left panel
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-120px)]">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 h-[calc(100vh-120px)]">
             {/* Left Panel - Scrollable Steps */}
-            <div className="lg:col-span-2 overflow-y-auto pr-4">
+            <div className="lg:col-span-3 overflow-y-auto">
               <div className="space-y-6">
                 <DestinationStep
                   request={currentRequest || initialRequest}
@@ -314,17 +307,16 @@ export default function HolidayPlanningPage() {
                   request={currentRequest || initialRequest}
                   selectedTransportation={selectedTransportation}
                   onToggleTransportation={toggleTransportation}
-                  onCustomInputChange={(input) => handleCustomInputChange('transportation', input)}
                   onRefreshAI={() => console.log('Refresh AI for transportation')}
                   isLoading={isTransportationLoading}
                 />
               </div>
             </div>
 
-            {/* Right Panel - Fixed Itinerary Preview */}
-            <div className="lg:col-span-1">
+            {/* Right Panel - Fixed Holiday Preview */}
+            <div className="lg:col-span-2">
               <div className="sticky top-6">
-                <ItineraryPreview
+                <HolidayPreview
                   itinerary={itinerary}
                   totalBudget={(currentRequest || initialRequest).budget}
                   actualCost={calculateTotalCost()}
@@ -334,6 +326,9 @@ export default function HolidayPlanningPage() {
                   selectedActivities={getFilteredData().selectedActivities}
                   selectedAccommodation={getFilteredData().selectedAccommodation}
                   selectedTransportation={getFilteredData().selectedTransportation}
+                  request={currentRequest || initialRequest}
+                  onRequestChange={handleRequestChange}
+                  currency={currency}
                 />
               </div>
             </div>

@@ -201,24 +201,24 @@ export default function SearchBar() {
                     
                     {/* Drawer content */}
                     <div className="w-full max-h-[80%] bg-white rounded-t-xl relative z-10 animate-slide-up flex flex-col">
-                        {/* Scrollable content area */}
-                        <div className="flex-1 overflow-y-auto p-4 pb-20">
-                            <TripPlannerForm defaultValues={defaultValues} onSubmit={onSubmit}>
+                        <TripPlannerForm defaultValues={defaultValues} onSubmit={onSubmit}>
+                            {/* Scrollable content area */}
+                            <div className="flex-1 overflow-y-auto p-4 pb-20">
                                 <FormLayout config={singleColumnConfig} />
-                            </TripPlannerForm>
-                        </div>
-
-                        {/* Fixed bottom controls */}
-                        <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 rounded-b-xl">
-                            <div className="flex justify-between items-center">
-                                <button type="reset" className="underline text-gray-600">
-                                    Clear all
-                                </button>
-                                <button type="submit" className="bg-primary-500 p-3 rounded-full text-white hover:bg-primary-600 transition-colors">
-                                    🔍
-                                </button>
                             </div>
-                        </div>
+
+                            {/* Fixed bottom controls */}
+                            <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 rounded-b-xl">
+                                <div className="flex justify-between items-center">
+                                    <button type="reset" className="underline text-gray-600">
+                                        Clear all
+                                    </button>
+                                    <button type="submit" className="bg-primary-500 p-3 rounded-full text-white hover:bg-primary-600 transition-colors">
+                                        🔍
+                                    </button>
+                                </div>
+                            </div>
+                        </TripPlannerForm>
                     </div>
                 </div>
             )}

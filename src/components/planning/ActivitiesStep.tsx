@@ -15,18 +15,11 @@ export default function ActivitiesStep({
   activities,
   selectedActivities,
   onToggleActivity,
-  onCustomInputChange,
   onRefreshAI,
   isLoading
 }: ActivitiesStepProps) {
-  const [customInput, setCustomInput] = useState('');
   const [sortBy, setSortBy] = useState<'popularity' | 'rating' | 'price' | 'theme_match'>('popularity');
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
-
-  const handleCustomInputSubmit = () => {
-    onCustomInputChange(customInput);
-    setCustomInput('');
-  };
 
 
   // Mock activity images - in real app these would come from the activity data
@@ -48,29 +41,6 @@ export default function ActivitiesStep({
       </div>
 
       <div className="space-y-6">
-        {/* Customize Activities Input */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm font-medium text-gray-700">Customize Activities Input</span>
-          </div>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Preferred activities, interests, special requirements..."
-              value={customInput}
-              onChange={(e) => setCustomInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleCustomInputSubmit()}
-              className="w-full px-3 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <button
-              onClick={handleCustomInputSubmit}
-              disabled={!customInput.trim()}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Send
-            </button>
-          </div>
-        </div>
 
         {/* Sort and Filter Controls */}
         <div className="flex flex-wrap items-center gap-4">
@@ -150,9 +120,9 @@ interface ActivityCardProps {
 
 function ActivityCard({ activity, isSelected, onToggle, onInfoClick, imageUrl }: ActivityCardProps) {
   return (
-    <div className="flex-shrink-0 w-64 bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+    <div className="flex-shrink-0 w-44 bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
       {/* Image Container */}
-      <div className="relative h-40">
+      <div className="relative h-28">
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
