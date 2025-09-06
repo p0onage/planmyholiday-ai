@@ -533,6 +533,472 @@
       }
     ]
   },
+  "journeySegments": {
+    "bali": [
+      {
+        "id": "outbound",
+        "title": "Outbound Journey",
+        "route": "Amsterdam → Bali",
+        "description": "International travel to your destination",
+        "image": "https://picsum.photos/400/300?random=outbound-flight",
+        "transportTypes": ["flight", "boat", "train", "drive", "bus"]
+      },
+      {
+        "id": "local",
+        "title": "Local Transport in Bali",
+        "route": "Within Bali",
+        "description": "Getting around during your stay",
+        "image": "https://picsum.photos/400/300?random=local-transport",
+        "transportTypes": ["local_transport", "rental"]
+      },
+      {
+        "id": "intercity",
+        "title": "Inter-city Travel",
+        "route": "Ubud → Seminyak → Canggu",
+        "description": "Travel between different areas in Bali",
+        "image": "https://picsum.photos/400/300?random=intercity-travel",
+        "transportTypes": ["local_transport", "rental", "bus"]
+      },
+      {
+        "id": "return",
+        "title": "Return Journey",
+        "route": "Bali → Amsterdam",
+        "description": "International travel back home",
+        "image": "https://picsum.photos/400/300?random=return-flight",
+        "transportTypes": ["flight", "boat", "train", "drive", "bus"]
+      }
+    ],
+    "tokyo": [
+      {
+        "id": "outbound",
+        "title": "Outbound Journey",
+        "route": "Amsterdam → Tokyo",
+        "description": "International travel to your destination",
+        "image": "https://picsum.photos/400/300?random=tokyo-outbound",
+        "transportTypes": ["flight", "train"]
+      },
+      {
+        "id": "local",
+        "title": "Local Transport in Tokyo",
+        "route": "Within Tokyo",
+        "description": "Getting around the city",
+        "image": "https://picsum.photos/400/300?random=tokyo-local",
+        "transportTypes": ["local_transport", "train", "bus"]
+      },
+      {
+        "id": "intercity",
+        "title": "Inter-city Travel",
+        "route": "Tokyo → Kyoto → Osaka",
+        "description": "Travel between different cities in Japan",
+        "image": "https://picsum.photos/400/300?random=tokyo-intercity",
+        "transportTypes": ["train", "bus", "local_transport"]
+      },
+      {
+        "id": "return",
+        "title": "Return Journey",
+        "route": "Tokyo → Amsterdam",
+        "description": "International travel back home",
+        "image": "https://picsum.photos/400/300?random=tokyo-return",
+        "transportTypes": ["flight", "train"]
+      }
+    ],
+    "santorini": [
+      {
+        "id": "outbound",
+        "title": "Outbound Journey",
+        "route": "Amsterdam → Santorini",
+        "description": "International travel to your destination",
+        "image": "https://picsum.photos/400/300?random=santorini-outbound",
+        "transportTypes": ["flight", "boat"]
+      },
+      {
+        "id": "local",
+        "title": "Local Transport in Santorini",
+        "route": "Within Santorini",
+        "description": "Getting around the island",
+        "image": "https://picsum.photos/400/300?random=santorini-local",
+        "transportTypes": ["local_transport", "rental", "bus"]
+      },
+      {
+        "id": "intercity",
+        "title": "Island Hopping",
+        "route": "Santorini → Mykonos → Paros",
+        "description": "Travel between Greek islands",
+        "image": "https://picsum.photos/400/300?random=santorini-islands",
+        "transportTypes": ["boat", "ferry", "local_transport"]
+      },
+      {
+        "id": "return",
+        "title": "Return Journey",
+        "route": "Santorini → Amsterdam",
+        "description": "International travel back home",
+        "image": "https://picsum.photos/400/300?random=santorini-return",
+        "transportTypes": ["flight", "boat"]
+      }
+    ]
+  },
+  "transportOptions": {
+    "bali": {
+      "outbound": [
+        {
+          "id": "bali-outbound-flight-1",
+          "name": "Direct Flight",
+          "type": "flight",
+          "price": 450,
+          "duration": "12h 30m",
+          "image": "https://picsum.photos/400/300?random=flight-direct",
+          "description": "Non-stop flight with full service",
+          "details": {
+            "airline": "British Airways",
+            "stops": 0,
+            "class": "Economy"
+          }
+        },
+        {
+          "id": "bali-outbound-flight-2",
+          "name": "Budget Flight",
+          "type": "flight",
+          "price": 280,
+          "duration": "14h 15m",
+          "image": "https://picsum.photos/400/300?random=flight-budget",
+          "description": "One stopover, basic service",
+          "details": {
+            "airline": "EasyJet",
+            "stops": 1,
+            "class": "Economy"
+          }
+        },
+        {
+          "id": "bali-outbound-flight-3",
+          "name": "Premium Flight",
+          "type": "flight",
+          "price": 850,
+          "duration": "11h 45m",
+          "image": "https://picsum.photos/400/300?random=flight-premium",
+          "description": "Business class with lounge access",
+          "details": {
+            "airline": "Emirates",
+            "stops": 0,
+            "class": "Business"
+          }
+        }
+      ],
+      "local": [
+        {
+          "id": "bali-local-scooter",
+          "name": "Scooter Rental",
+          "type": "local_transport",
+          "price": 25,
+          "duration": "Daily",
+          "image": "https://picsum.photos/400/300?random=scooter",
+          "description": "Perfect for exploring Bali's narrow roads",
+          "details": {
+            "company": "Bali Scooter Rentals",
+            "vehicle": "Honda Scoopy"
+          }
+        },
+        {
+          "id": "bali-local-taxi",
+          "name": "Taxi Service",
+          "type": "local_transport",
+          "price": 15,
+          "duration": "Per trip",
+          "image": "https://picsum.photos/400/300?random=taxi",
+          "description": "Reliable local taxi service",
+          "details": {
+            "company": "Blue Bird Taxi"
+          }
+        },
+        {
+          "id": "bali-local-grab",
+          "name": "Grab/Gojek",
+          "type": "local_transport",
+          "price": 8,
+          "duration": "Per trip",
+          "image": "https://picsum.photos/400/300?random=ride-hailing",
+          "description": "Ride-hailing app service",
+          "details": {
+            "company": "Grab Indonesia"
+          }
+        }
+      ],
+      "intercity": [
+        {
+          "id": "bali-intercity-car",
+          "name": "Car Rental",
+          "type": "rental",
+          "price": 45,
+          "duration": "Daily",
+          "image": "https://picsum.photos/400/300?random=car-rental",
+          "description": "Freedom to explore at your own pace",
+          "details": {
+            "company": "Avis Bali",
+            "vehicle": "Compact Car"
+          }
+        },
+        {
+          "id": "bali-intercity-scooter",
+          "name": "Motorbike Rental",
+          "type": "rental",
+          "price": 18,
+          "duration": "Daily",
+          "image": "https://picsum.photos/400/300?random=motorbike",
+          "description": "Perfect for Bali's narrow roads",
+          "details": {
+            "company": "Bali Bike Rentals",
+            "vehicle": "Honda Scooter"
+          }
+        },
+        {
+          "id": "bali-intercity-bus",
+          "name": "Intercity Bus",
+          "type": "bus",
+          "price": 5,
+          "duration": "2-3 hours",
+          "image": "https://picsum.photos/400/300?random=bus",
+          "description": "Comfortable bus between cities",
+          "details": {
+            "company": "Perama Tour"
+          }
+        },
+        {
+          "id": "bali-intercity-private",
+          "name": "Private Driver",
+          "type": "local_transport",
+          "price": 35,
+          "duration": "Per day",
+          "image": "https://picsum.photos/400/300?random=private-driver",
+          "description": "Private driver with local knowledge",
+          "details": {
+            "company": "Bali Private Tours"
+          }
+        }
+      ],
+      "return": [
+        {
+          "id": "bali-return-flight-1",
+          "name": "Direct Flight",
+          "type": "flight",
+          "price": 450,
+          "duration": "12h 30m",
+          "image": "https://picsum.photos/400/300?random=return-flight-direct",
+          "description": "Non-stop flight with full service",
+          "details": {
+            "airline": "British Airways",
+            "stops": 0,
+            "class": "Economy"
+          }
+        },
+        {
+          "id": "bali-return-flight-2",
+          "name": "Budget Flight",
+          "type": "flight",
+          "price": 280,
+          "duration": "14h 15m",
+          "image": "https://picsum.photos/400/300?random=return-flight-budget",
+          "description": "One stopover, basic service",
+          "details": {
+            "airline": "EasyJet",
+            "stops": 1,
+            "class": "Economy"
+          }
+        },
+        {
+          "id": "bali-return-flight-3",
+          "name": "Premium Flight",
+          "type": "flight",
+          "price": 850,
+          "duration": "11h 45m",
+          "image": "https://picsum.photos/400/300?random=return-flight-premium",
+          "description": "Business class with lounge access",
+          "details": {
+            "airline": "Emirates",
+            "stops": 0,
+            "class": "Business"
+          }
+        }
+      ]
+    },
+    "tokyo": {
+      "outbound": [
+        {
+          "id": "tokyo-outbound-flight-1",
+          "name": "Japan Airlines Direct",
+          "type": "flight",
+          "price": 920,
+          "duration": "11h 45m",
+          "image": "https://picsum.photos/400/300?random=tokyo-flight",
+          "description": "Direct flight with Japanese service",
+          "details": {
+            "airline": "Japan Airlines",
+            "stops": 0,
+            "class": "Economy"
+          }
+        },
+        {
+          "id": "tokyo-outbound-flight-2",
+          "name": "Budget Flight",
+          "type": "flight",
+          "price": 650,
+          "duration": "14h 30m",
+          "image": "https://picsum.photos/400/300?random=tokyo-budget",
+          "description": "One stopover, basic service",
+          "details": {
+            "airline": "AirAsia",
+            "stops": 1,
+            "class": "Economy"
+          }
+        }
+      ],
+      "local": [
+        {
+          "id": "tokyo-local-train",
+          "name": "JR Pass 7-Day",
+          "type": "local_transport",
+          "price": 180,
+          "duration": "7 days",
+          "image": "https://picsum.photos/400/300?random=jr-pass",
+          "description": "Unlimited travel on JR trains",
+          "details": {
+            "company": "JR Group",
+            "vehicle": "All JR Lines"
+          }
+        },
+        {
+          "id": "tokyo-local-subway",
+          "name": "Tokyo Metro Pass",
+          "type": "local_transport",
+          "price": 25,
+          "duration": "Daily",
+          "image": "https://picsum.photos/400/300?random=tokyo-metro",
+          "description": "Unlimited subway travel",
+          "details": {
+            "company": "Tokyo Metro"
+          }
+        }
+      ],
+      "intercity": [
+        {
+          "id": "tokyo-intercity-shinkansen",
+          "name": "Shinkansen Pass",
+          "type": "train",
+          "price": 200,
+          "duration": "2-3 hours",
+          "image": "https://picsum.photos/400/300?random=shinkansen",
+          "description": "High-speed train between cities",
+          "details": {
+            "company": "JR Group",
+            "vehicle": "Shinkansen"
+          }
+        }
+      ],
+      "return": [
+        {
+          "id": "tokyo-return-flight-1",
+          "name": "Japan Airlines Direct",
+          "type": "flight",
+          "price": 920,
+          "duration": "11h 45m",
+          "image": "https://picsum.photos/400/300?random=tokyo-return",
+          "description": "Direct flight with Japanese service",
+          "details": {
+            "airline": "Japan Airlines",
+            "stops": 0,
+            "class": "Economy"
+          }
+        }
+      ]
+    },
+    "santorini": {
+      "outbound": [
+        {
+          "id": "santorini-outbound-flight-1",
+          "name": "Aegean Airlines via Athens",
+          "type": "flight",
+          "price": 450,
+          "duration": "6h 30m",
+          "image": "https://picsum.photos/400/300?random=aegean-flight",
+          "description": "Flight via Athens to Santorini",
+          "details": {
+            "airline": "Aegean Airlines",
+            "stops": 1,
+            "class": "Economy"
+          }
+        },
+        {
+          "id": "santorini-outbound-ferry",
+          "name": "Ferry from Athens",
+          "type": "boat",
+          "price": 45,
+          "duration": "5 hours",
+          "image": "https://picsum.photos/400/300?random=ferry",
+          "description": "Scenic ferry ride to Santorini",
+          "details": {
+            "company": "Blue Star Ferries",
+            "vessel": "High-speed ferry"
+          }
+        }
+      ],
+      "local": [
+        {
+          "id": "santorini-local-atv",
+          "name": "ATV Rental",
+          "type": "rental",
+          "price": 35,
+          "duration": "Daily",
+          "image": "https://picsum.photos/400/300?random=atv",
+          "description": "Perfect for exploring the island",
+          "details": {
+            "company": "Santorini ATV Rentals",
+            "vehicle": "ATV Quad"
+          }
+        },
+        {
+          "id": "santorini-local-bus",
+          "name": "Local Bus",
+          "type": "local_transport",
+          "price": 2,
+          "duration": "Per trip",
+          "image": "https://picsum.photos/400/300?random=local-bus",
+          "description": "Public bus service around the island",
+          "details": {
+            "company": "KTEL Santorini"
+          }
+        }
+      ],
+      "intercity": [
+        {
+          "id": "santorini-intercity-boat",
+          "name": "Island Hopping Boat",
+          "type": "boat",
+          "price": 60,
+          "duration": "Full day",
+          "image": "https://picsum.photos/400/300?random=island-boat",
+          "description": "Visit nearby Greek islands",
+          "details": {
+            "company": "Santorini Boat Tours",
+            "vessel": "Catamaran"
+          }
+        }
+      ],
+      "return": [
+        {
+          "id": "santorini-return-flight-1",
+          "name": "Aegean Airlines via Athens",
+          "type": "flight",
+          "price": 450,
+          "duration": "6h 30m",
+          "image": "https://picsum.photos/400/300?random=aegean-return",
+          "description": "Flight via Athens from Santorini",
+          "details": {
+            "airline": "Aegean Airlines",
+            "stops": 1,
+            "class": "Economy"
+          }
+        }
+      ]
+    }
+  },
   "itineraryTemplates": {
     "bali": [
       {
