@@ -67,15 +67,35 @@ function ModalControls({ onClose }: { onClose: () => void }) {
 
 export default function SearchBar() {
     const [isDesktopModalOpen, setDesktopModalOpen] = useState(false);
+    const [isDesktopModalClosing, setIsDesktopModalClosing] = useState(false);
     const [isMobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+    const [isMobileDrawerClosing, setIsMobileDrawerClosing] = useState(false);
     const navigate = useNavigate();
     
     // Get user location for default departure city
     const { location } = useLocation();
 
+    // Handle desktop modal closing animation
+    const handleDesktopModalClose = () => {
+        setIsDesktopModalClosing(true);
+        setTimeout(() => {
+            setDesktopModalOpen(false);
+            setIsDesktopModalClosing(false);
+        }, 300); // Match animation duration
+    };
+
+    // Handle mobile drawer closing animation
+    const handleMobileDrawerClose = () => {
+        setIsMobileDrawerClosing(true);
+        setTimeout(() => {
+            setMobileDrawerOpen(false);
+            setIsMobileDrawerClosing(false);
+        }, 300); // Match animation duration
+    };
+
     // Prevent body scroll when mobile drawer is open
     useEffect(() => {
-        if (isMobileDrawerOpen) {
+        if (isMobileDrawerOpen && !isMobileDrawerClosing) {
             // Prevent body scroll
             document.body.style.overflow = 'hidden';
             // Prevent touch scrolling on mobile
@@ -94,7 +114,7 @@ export default function SearchBar() {
             document.body.style.position = '';
             document.body.style.width = '';
         };
-    }, [isMobileDrawerOpen]);
+    }, [isMobileDrawerOpen, isMobileDrawerClosing]);
 
     const defaultValues: TripPlannerFormValues = {
         query: "",
@@ -128,8 +148,8 @@ export default function SearchBar() {
             } 
         });
         
-        setDesktopModalOpen(false);
-        setMobileDrawerOpen(false);
+        handleDesktopModalClose();
+        handleMobileDrawerClose();
     };
 
     return (
@@ -171,19 +191,21 @@ export default function SearchBar() {
             </div>
 
             {/* Desktop Modal - Slides down from search bar */}
-            {isDesktopModalOpen && (
+            {(isDesktopModalOpen || isDesktopModalClosing) && (
                 <div className="hidden md:block relative">
                     {/* Backdrop - covers entire screen */}
                     <div 
                         className="fixed inset-0 z-40"
-                        onClick={() => setDesktopModalOpen(false)}
+                        onClick={handleDesktopModalClose}
                     />
                     
                     {/* Modal content - positioned below search bar */}
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white shadow-lg border border-gray-200 rounded-lg animate-slide-down z-50 max-h-[80vh] overflow-y-auto">
+                    <div className={`absolute top-full left-0 right-0 mt-2 bg-white shadow-lg border border-gray-200 rounded-lg z-50 max-h-[80vh] overflow-y-auto ${
+                        isDesktopModalClosing ? 'animate-slide-up-to-top' : 'animate-slide-down-from-top'
+                    }`}>
                         <div className="max-w-3xl mx-auto p-4">
                             <TripPlannerForm defaultValues={defaultValues} onSubmit={onSubmit}>
-                                <ModalControls onClose={() => setDesktopModalOpen(false)} />
+                                <ModalControls onClose={handleDesktopModalClose} />
                                 <FormLayout />
                             </TripPlannerForm>
                         </div>
@@ -203,16 +225,18 @@ export default function SearchBar() {
             </div>
 
             {/* Mobile Bottom Drawer */}
-            {isMobileDrawerOpen && (
+            {(isMobileDrawerOpen || isMobileDrawerClosing) && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-end overflow-hidden">
                     {/* Backdrop - click to close */}
                     <div 
                         className="absolute inset-0"
-                        onClick={() => setMobileDrawerOpen(false)}
+                        onClick={handleMobileDrawerClose}
                     />
                     
                     {/* Drawer content */}
-                    <div className="w-full h-[85vh] bg-white rounded-t-xl relative z-10 animate-slide-up flex flex-col">
+                    <div className={`w-full h-[85vh] bg-white rounded-t-xl relative z-10 flex flex-col ${
+                        isMobileDrawerClosing ? 'animate-slide-down' : 'animate-slide-up'
+                    }`}>
                         <TripPlannerForm defaultValues={defaultValues} onSubmit={onSubmit}>
                             <div className="flex flex-col h-full">
                                 {/* Scrollable content area */}
