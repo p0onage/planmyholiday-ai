@@ -1,15 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import heroBanner from '../assets/images/heroBanner.png';
+import heroBannerMobile from '../assets/images/heroBanner-mobile.png';
 import { FaGlobe, FaPlane, FaBicycle } from 'react-icons/fa';
 import { Tabs, TripGrid, TripDetailModal, SearchBar } from '../components/home';
 import type { Trip } from '../types';
 import { TravelCategory } from '../types';
 import { tripService } from '../services/tripService';
 
-const heroTexts = [
+const getHeroTexts = (isMobile: boolean) => [
   'Discover your dream destination',
   'AI that plans, you just pack',
-  'Flights, hotels, and adventures - all in one place',
+  isMobile
+    ? 'Flights, hotels, and adventures<br className="block sm:hidden" />- all in one place'
+    : 'Flights, hotels, and adventures - all in one place',
 ];
 
 export default function HomePage() {
@@ -22,9 +25,14 @@ export default function HomePage() {
   // Hero image pan state
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [tilt, setTilt] = useState(0);
-  const [zoom, setZoom] = useState(1.2);
+  // Responsive zoom and image: higher zoom and mobile image on mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  // Increase zoom for mobile to fill the view more
+  const initialZoom = isMobile ? 2.2 : 1.2;
+  const [zoom, setZoom] = useState(initialZoom);
+  const heroImg = isMobile ? heroBannerMobile : heroBanner;
   const direction = useRef({ x: 1, y: 1 });
-  const speed = 0.5;
+  const speed = isMobile ? 0.18 : 0.5;
   // Limit pan so movement stays within the image bounds
   const maxOffset = { x: 60, y: 60 };
 
@@ -33,6 +41,7 @@ export default function HomePage() {
   const [textIndex, setTextIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [typing, setTyping] = useState(true);
+  const heroTexts = getHeroTexts(isMobile);
 
   // Animate hero image pan
   useEffect(() => {
@@ -49,12 +58,14 @@ export default function HomePage() {
       });
       // Add gentle tilt and random zoom
       setTilt(Math.sin(Date.now() / 1200) * 4); // oscillate between -4deg and 4deg
-      setZoom(1.15 + Math.sin(Date.now() / 3000) * 0.1 + Math.cos(Date.now() / 5000) * 0.05); // zoom between ~1.1 and ~1.3
+      if (!isMobile) {
+        setZoom(1.15 + Math.sin(Date.now() / 3000) * 0.1 + Math.cos(Date.now() / 5000) * 0.05); // zoom between ~1.1 and ~1.3
+      }
       animationFrame = requestAnimationFrame(animate);
     }
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
-  }, []);
+  }, [isMobile]);
 
   // Typing effect logic
   useEffect(() => {
@@ -109,30 +120,35 @@ export default function HomePage() {
       <div className="w-full flex justify-center py-8 relative">
         <div
           className="overflow-hidden rounded-2xl shadow-lg w-full max-w-7xl"
-          style={{ height: 520, background: 'transparent' }}
+          style={{ height: undefined, background: '#eedbc5ff' }}
         >
-          <img
-            src={heroBanner}
-            alt="PlanMyHoliday Hero Banner"
-            style={{
-              width: '120%',
-              height: '120%',
-              objectFit: 'cover',
-              transform: `scale(${zoom}) translate(${offset.x}px, ${offset.y -50}px) rotate(${tilt}deg)`,
-              transition: 'transform 0.1s linear',
-            }}
-            className="select-none pointer-events-none"
-          />
-          {/* Overlay text at bottom left */}
-          <div className="absolute left-8 bottom-8 text-white text-2xl md:text-3xl font-bold flex items-center drop-shadow-lg">
-            <span>{displayText}</span>
-            {charIndex === heroTexts[textIndex].length && (
-              <span className="ml-3">
-                {textIndex === 0 && <FaGlobe />}
-                {textIndex === 1 && <FaPlane />}
-                {textIndex === 2 && <FaBicycle />}
-              </span>
-            )}
+          <div className="w-full h-40 sm:h-80 md:h-[520px] relative">
+            <img
+              src={heroImg}
+              alt="PlanMyHoliday Hero Banner"
+              style={{
+                width: isMobile ? '100%' : '120%',
+                height: '100%',
+                objectFit: 'cover',
+                transform: `scale(${zoom}) translate(${offset.x}px, ${offset.y}px) rotate(${tilt}deg)`,
+                transition: 'transform 0.1s linear',
+              }}
+              className="select-none pointer-events-none absolute inset-0 w-full h-full"
+            />
+            {/* Overlay text at bottom left */}
+            <div className="absolute left-4 bottom-4 sm:left-8 sm:bottom-8 text-white text-xl sm:text-2xl md:text-3xl font-bold flex items-center drop-shadow-lg">
+              {isMobile
+                ? <span dangerouslySetInnerHTML={{ __html: displayText }} />
+                : <span>{displayText}</span>
+              }
+              {charIndex === heroTexts[textIndex].length && (
+                <span className="ml-3">
+                  {textIndex === 0 && <FaGlobe />}
+                  {textIndex === 1 && <FaPlane />}
+                  {textIndex === 2 && <FaBicycle />}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
