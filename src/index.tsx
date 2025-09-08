@@ -5,6 +5,10 @@ import './index.css';
 import { AppProviders } from './providers';
 import { AppLayout } from './components/layouts';
 import { HomePage, HolidayPlanningPage } from './pages';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +26,22 @@ const router = createBrowserRouter([
       {
         path: "plan",
         element: <HolidayPlanningPage />,
+      },
+      {
+        path: "about",
+        element: <AboutPage />,
+      },
+      {
+        path: "contact",
+        element: <ContactPage />,
+      },
+      {
+        path: "privacy",
+        element: <PrivacyPage />,
+      },
+      {
+        path: "terms",
+        element: <TermsPage />,
       },
     ],
   },
